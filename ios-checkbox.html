@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>JS Bin</title>
+  <style>
+        * {
+      xbackground-color: rgba(0,0,0,0.1);
+      box-sizing:border-box;
+    }
+
+    input {
+      display:none;
+    }
+    label {
+      width: 400px;
+      height: 200px;
+      border-radius: 99999999px;
+      display:block;
+      border:5px solid #e5e5e5;
+      position: relative;
+    }
+
+
+
+    label::after {
+      content : "";
+      display:block;
+      width: 190px;
+      height: 190px;
+      position: relative;
+      left: 0px;
+      background-color: #fff;
+      border-radius: 99999999px;
+      box-shadow:0px 2px 2px 3px #e5e5e5;
+      transition:margin-left 0.8s cubic-bezier(0,1.37,.94,.95),width 0.2s linear,left 0.2s linear;
+      
+    }
+    input:checked + label::after{
+      margin-left:200px;
+      box-shadow:0 0 0 5px rgba(0,0,0,0);
+    }
+    input:checked + label{
+      background-color: lightgreen;
+      border:5px solid rgba(0,0,0,0);
+    }
+
+    input:active + label::after{
+      width: 250px;
+    }
+    input:active:checked + label::after{
+      left: -60px;
+    }
+    input:active:not(:checked) + label{
+      background-color: #e5e5e5 ;
+    }
+    input:active:not(:checked) + label > div{
+      background-color: #fff;
+      width: 200px;
+      height: 0px;
+      top:100px;
+      left:-5px;
+    }
+
+    div {
+      width: 400px;
+      height:200px;
+      border-radius: 99999999px;
+      position: absolute;
+      xbackground-color: red;
+      top:-5px;
+      left:-5px;
+      transition:top 0.3s linear,height 0.3s linear,width 0.3s linear;
+    }
+
+  </style>
+</head>
+<body>
+ 
+  <input type="checkbox" id="cb">
+  <label for="cb"><div></div></label>
+</body>
+</html>
