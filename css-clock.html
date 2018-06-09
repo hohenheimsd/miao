@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<!--
+Created using JS Bin
+http://jsbin.com
+
+Copyright (c) 2018 by hohenheimsd (http://jsbin.com/nulowog/1/edit)
+
+Released under the MIT license: http://jsbin.mit-license.org
+-->
+<meta name="robots" content="noindex">
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>JS Bin</title>
+<style id="jsbin-css">
+* {
+  xbackground-color: rgba(0,0,0,0.1);
+}
+
+.fix-fz{
+  font-size: 0;
+}
+
+.fix-fz *{
+  font-size: initial;
+}
+
+body {
+  background-color: rgba(0,0,0,0.1);
+}
+
+.clock {
+  width: 400px;
+  height: 400px;
+  background-color: #fff;
+  position:relative;
+  border-radius:999999px;
+  padding:20px
+}
+
+div > span {
+  display: block;
+  position:absolute;
+  width: 18px;
+  height:200px;
+  xtext-align: center;
+  margin-left:191px;
+  transform-origin:bottom center;
+  background-color: #fff;
+  xanimation:circle 5s linear;
+}
+span:nth-child(1) {
+  transform:rotate(30deg);
+}
+span:nth-child(2) {
+  transform:rotate(60deg);
+}
+span:nth-child(3) {
+  transform:rotate(90deg);
+}
+span:nth-child(4) {
+  transform:rotate(120deg);
+}
+span:nth-child(5) {
+  transform:rotate(150deg);
+}
+span:nth-child(6) {
+  transform:rotate(180deg);
+}
+span:nth-child(7) {
+  transform:rotate(210deg);
+}
+span:nth-child(8) {
+  transform:rotate(240deg);
+}
+span:nth-child(9) {
+  transform:rotate(270deg);
+}
+span:nth-child(10) {
+  transform:rotate(300deg);
+}
+span:nth-child(11) {
+  transform:rotate(330deg);
+}
+
+span > span{
+  position:absolute;
+  display:block;
+  xbackground-color: red;
+  transform-origin:center;
+  text-align: center;
+  width: 18px;
+
+}
+span:nth-child(1) > span {
+  transform:rotate(-30deg) scale(1.5);
+}
+span:nth-child(2) > span {
+  transform:rotate(-60deg) scale(1.5);
+}
+span:nth-child(3) > span {
+  transform:rotate(-90deg) scale(1.5);
+}
+span:nth-child(4) > span {
+  transform:rotate(-120deg) scale(1.5);
+}
+span:nth-child(5) > span {
+  transform:rotate(-150deg) scale(1.5);
+}
+span:nth-child(6) > span {
+  transform:rotate(-180deg) scale(1.5);
+}
+
+span:nth-child(7) > span {
+  transform:rotate(-210deg) scale(1.5);
+}
+span:nth-child(8) > span {
+  transform:rotate(-240deg) scale(1.5);
+}
+
+span:nth-child(9) > span {
+  transform:rotate(-270deg) scale(1.5);
+}
+
+span:nth-child(10) > span {
+  transform:rotate(-300deg) scale(1.5);
+}
+span:nth-child(11) > span {
+  transform:rotate(-330deg) scale(1.5);
+}
+
+span:nth-child(12) > span {
+  transform:scale(1.5);
+}
+
+.pin {
+  width: 20px;
+  height: 20px;
+  background-color: black;
+  position:absolute;
+  transform:translate(-50%,-50%);
+  top:50%;
+  left:50%;
+  border-radius:9999px;
+}
+
+.second {
+  width: 2px;
+  height: 200px;
+  background-color: black;
+  position:absolute;
+  top:50%;
+  left:50%;
+  border-radius:9999px;
+  transform-origin:center 80%;
+  animation:second-move 60s steps(60) infinite;
+}
+
+.minute {
+  width: 5px;
+  height: 160px;
+  background-color: black;
+  position:absolute;
+  top:50%;
+  left:50%;
+  border-radius:9999px;
+  transform-origin:center 100%;
+  animation:minute-hour-move 3600s linear infinite;
+}
+
+.hour {
+  width: 10px;
+  height: 100px;
+  background-color: black;
+  position:absolute;
+  top:50%;
+  left:50%;
+  border-radius:9999px;
+  transform-origin:center 100%;
+  animation:minute-hour-move 43200s linear infinite;
+}
+
+
+
+@keyframes second-move {
+  from{
+     transform:translate(-50%,-80%) rotate(0);
+  }
+  to {
+     transform:translate(-50%,-80%) rotate(360deg);
+  }
+}
+
+@keyframes minute-hour-move {
+  from{
+     transform:translate(-50%,-100%) rotate(0);
+  }
+  to {
+     transform:translate(-50%,-100%) rotate(360deg);
+  }
+}
+
+
+
+
+
+
+
+</style>
+</head>
+<body>
+  <div class="fix-fz clock">
+    <span><span>1</span></span>
+    <span><span>2</span></span>
+    <span><span>3</span></span>
+    <span><span>4</span></span>
+    <span><span>5</span></span>
+    <span><span>6</span></span>
+    <span><span>7</span></span>
+    <span><span>8</span></span>
+    <span><span>9</span></span>
+    <span><span>10</span></span>
+    <span><span>11</span></span>
+    <span><span>12</span></span>
+    <div class="pin"></div>
+    <div class="second"></div>
+    <div class="minute"></div>
+    <div class="hour"></div>
+
+ </div>
+</body>
+</html>
