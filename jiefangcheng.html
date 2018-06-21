@@ -1,0 +1,56 @@
+<script>
+
+  function twoUnknowns(){
+    alert('二元一次方程');
+    var a = inputCheck('a');
+    var b = inputCheck('b');
+    var c = inputCheck('c');
+    var d = inputCheck('d');
+    var e = inputCheck('e');
+    var f = inputCheck('f');
+
+    if (a/c == b/d && a/c == e/f) {
+      console.log("该二元一次方程有无数个解");
+    }else if (a/c == b/d && a/c != e/f){
+      console.log("该二元一次方程无解");
+    }else {
+      var x = (b*f - d*e)/(b*c - a*d);
+      var y = (a*f - c*e)/(a*d - b*c);
+      console.log(`x的值为${x},y的值为${y}`);
+    }
+  }
+
+  twoUnknowns();
+  function quadratic(){
+    alert('一元二次方程');
+    var a = inputCheck('a');
+    var b = inputCheck('b');
+    var c = inputCheck('c');
+
+    if ((b*b - 4*a*c) > 0){
+      var x1 = (-b + Math.sqrt(b**2 - 4*a*c))/(2*a);
+      var x2 = (-b - Math.sqrt(b**2 - 4*a*c))/(2*a);
+      console.log(`x1的值为${x1},x2的值为${x2}`);
+    }else if((b*b - 4*a*c) == 0){
+      var x = (-b)/(2*a);
+      console.log(`x的值为${x}`);
+    }else {
+      var x1 = (Math.sqrt(4*a*c - b**2))/(2*a);
+      var x2 = (Math.sqrt(4*a*c - b**2))/(2*a);
+      console.log(`x1的值为${(-b)/(2*a)}+${x1+'i'},x2的值为${(-b)/(2*a)}-${x2+'i'}`);
+    }
+
+  }
+  quadratic();
+
+  function inputCheck(name){
+    var num = Number(prompt(name));
+    while(Number.isNaN(num)){
+        alert("请输入一个数字");
+        num = Number(prompt(name));
+    }
+    return num;
+  }
+
+
+</script>
