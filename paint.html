@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <style>
+    canvas {
+      border: 2px solid;
+    }
+  </style>
+</head>
+<body>
+  <canvas width="400" height="300"></canvas>
+</body>
+
+<script>
+
+
+  var cvs = document.querySelector('canvas');
+  var ctx = cvs.getContext('2d');
+  function dot(x,y,color = 'black') {
+    ctx.fillStyle = color;
+    ctx.fillRect(x,y,1,1);
+  }
+
+  //直线
+
+  for (var i = 0; i < 399; i++) {
+    dot(i,10);
+  }
+  //虚线
+  for (var i = 0; i < 399; i++) {
+    if (i % 2 == 0) {
+      dot(i,20);
+    }
+  }
+  
+  // **00线
+  var a = 0;
+  for (var i = 0; i < 399; i++) {
+    if (a < 2) {
+      dot(i,30);
+    }
+    a++;
+    if (a == 4) a = 0;
+  }
+  // ***00线
+  var a = 0;
+  for (var i = 0; i < 399; i++) {
+    if (a < 3) {
+      dot(i,40);
+    }
+    a++;
+    if (a == 5) a = 0;
+  }
+
+  //45度线
+  for (var i = 0,j = 0; i < 399; i++) {
+      dot(i,j);
+      j++;
+  }
+  //对角线
+  var rate = document.getElementsByTagName("canvas")[0].getAttribute("height") / document.getElementsByTagName("canvas")[0].getAttribute("width");
+  for (var i = 0,j = 0; i < 399; i++) {
+      dot(i,j*rate);
+      j++;
+  }
+
+  //圆 第一种解法
+  /*
+  var a = 100;
+  var b = 100;
+  var r = 50;
+  var c;
+  var y1;
+  var y2;
+  for (var i = 0,j = 0; i < 399; i++) {
+    if (i >= (a-r) && i <= (a+r)){
+      c = ((i-a)**2 + b**2 - r**2);
+      y1 = ((2*b)+Math.sqrt(4*(b**2)-4*c))/2;
+      y2 = ((2*b)-Math.sqrt(4*(b**2)-4*c))/2;
+      dot(i,y1);
+      dot(i,y2);
+    }
+  }
+
+  for (var i = 0,j = 0; i < 399; i++) {
+    if (i >= (b-r) && i <= (b+r)){
+      c = ((i-b)**2 + a**2 - r**2);
+      y1 = ((2*a)+Math.sqrt(4*(a**2)-4*c))/2;
+      y2 = ((2*a)-Math.sqrt(4*(a**2)-4*c))/2;
+      dot(y1,i);
+      dot(y2,i);
+    }
+  }
+  */
+  //圆 第二种解法
+  var a = 100;
+  var b = 100;
+  var r = 50;
+
+  for (var i = 0; i < 360; i++) {
+    dot((a + Math.sin(i/360*2*Math.PI)*r),((b + Math.cos(i/360*2*Math.PI)*r)));
+  }
+
+  //矩形
+  var a = 150;
+  var b = 150;
+  var h = 50;
+  var w = 50;
+
+  for (var i = a; i < (a + w); i++) {
+    for (var j = b; j < b + h ; j++) {
+      dot(i,j);
+    }
+  }
+  //色彩空间
+  var a = 200;
+  var b = 200;
+  var h = 50;
+  var w = 50;
+  var rate = 256 / w;
+  var cR = 255;
+  var cG = 255;
+  var cB = 0;
+  for (var i = a; i < a + w ; i++) {
+    for (var j = b; j < b + h ; j++) {
+      dot(i,j,'rgb(' + cR + ',' + cG + ',' + cB + ')');
+      cG = Number(cG) - rate;
+    }
+    cB = Number(cB) + rate;
+    cG = 255;
+  }
+      
+    
+
+
+
+
+</script>
+</html>
