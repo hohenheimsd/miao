@@ -1,0 +1,83 @@
+<script id="ch0105/01">
+  var a = +prompt("请输入学生人数");
+  var sum = 0;
+  for (var i = 0; i < a; i++) {
+    sum += Number(prompt('第 ' + (i + 1) + ' 个学生的成绩'));
+  }
+  var ave = sum / a;
+  ave = ave.toFixed(2);
+  console.log(ave);
+</script>
+
+<script id="ch0105/02/">
+  var sum = 0;
+  for (var i = 0; i < 12; i++) {
+    sum += Number(prompt(i + 1 + ' 月末结余'));
+  }
+
+  var ave = sum / 12;
+  ave = ave.toFixed(2);
+  console.log('平均月末结余为: ' + '$' + ave);
+</script>
+
+<script id="ch0105/03">
+  var num = +prompt('请输入样本数量：');
+  var sum = 0;
+  var tmp = 0;
+  for (var i = 0; i < num; i++) {
+    sum += Number(prompt('请输入一个绝对值小于等于1000的数'));
+  }
+
+  var ave = sum / num;
+  ave = ave.toFixed(4);
+  console.log(ave);
+</script>
+
+<script id="ch0105/20">
+  var h = +prompt('请输入一个高度： ');
+  var s = h;
+  for (var i = 0; i < 9; i++) {
+    s += h;
+    h = h*0.5;
+  }
+
+  console.log(s);
+  console.log(h/2);
+</script>
+
+<script id="ch0105/19">
+
+  var roof = +prompt('屋顶数：');
+  var x = 0;
+  var y = 0;
+  var p = 0;
+  var t = 0;
+
+  for (var i = 0; i < roof; i++) {
+    x = +prompt(`第${roof}个屋顶x坐标`);
+    y = +prompt(`第${roof}个屋顶y坐标`);
+    p = +prompt(`第${roof}个屋顶人数`);
+    t += Math.sqrt(x*x + y*y) / 25 + p + 0.5*p;
+  }
+
+  
+
+  //t = parseInt(t) < t ? parseInt(t) + 1 : parseInt(t);  
+  t = Math.ceil(t);
+
+  console.log(t);
+
+</script>
+  
+<script id="ch0105/17">
+
+  var a = +prompt('fibonacci某一项');
+  function fibonacci(num) {
+    if (num == 1 || num == 2) return 1;
+    return fibonacci(num - 1) + fibonacci(num - 2);
+  }
+
+  console.log(fibonacci(a));
+
+
+</script>
