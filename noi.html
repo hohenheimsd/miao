@@ -79,5 +79,170 @@
 
   console.log(fibonacci(a));
 
+  var n1 = 1;
+  var n2 = 1;
+  var n = 0;
+  for (var i = 3; i < a; i++) {
+    n = n1 + n2;
+    n1 = n2;
+    n2 = n;
+  }
 
+
+
+</script>
+
+
+
+<script id="sort" sample-input="4 1 7" sample-output="1 4 7" comment="输入三个数，把此三个数按升序输出" type="xxx">
+  var a = [];
+  for (var i = 0; i < 3; i++) {
+    a.push(prompt());
+  }
+  a.sort((x,y) => y - x);
+  for (var i = 0; i < 3; i++) {
+    console.log(a.pop());
+  }
+
+</script>
+<script id="narcissistic " sample-input="153" sample-output="YES" comment="判断一个数是否为水仙花数" type="xxx">
+  var a  = +prompt();
+  var b = 0;
+  var num = a.toString().length;
+  var sum = 0;
+  for (var i = 0; i < num; i++) {
+    b = parseInt(a / (10 ** i)) % 10;
+    sum += b ** num;
+  }
+
+  if (sum == a) {
+    console.log('YES');
+  }else console.log('NO');
+
+</script>
+<script id="narcissistics" sample-input="" sample-output="" comment="找出100到10000以内所有的水仙花数" type="xxx">
+  var a  = 0;
+  var b = 0;
+  var num = 0;
+  var sum = 0;
+  for (var i = 100; i <= 10000; i++) {
+    a  = i;
+    b = 0;
+    num = a.toString().length;
+    sum = 0;
+    for (var j = 0; j < num; j++) {
+      b = parseInt(a / (10 ** j)) % 10;
+      sum += b ** num;
+    }
+    if (sum == a) {
+      console.log(sum);
+    }
+  }
+</script>
+<script id="palindrom" sample-input="12321" sample-output="YES" comment="判断一个非负整数是否为回文数字" type="xxx">
+  var a = +prompt();
+  var s = a.toString();
+  var num = s.length;
+  var n1 = '';
+  
+  for (var i = 0; i < parseInt(num / 2); i++) {
+    n1 += s.charAt(num - i - 1);
+  }
+
+  if (n1 == s.slice(0,i)) console.log(`${s}是回文数字`); else console.log(`${s}不是回文数字`);
+
+</script>
+<script id="weekday" sample-input="2018 6" sample-output="5" comment="输入年份与月份，给出该年该月的第一天是星期几" type="">
+  
+</script>
+<script id="complete-number" sample-input="6" sample-output="YES" comment="判断一个数是否为完全数" type="xxx">
+  var a = +prompt();
+  var sum = 0;
+  for (var i = 1; i <= (a / 2); i++) {
+    sum += a % i == 0 ? i : 0;
+  }
+
+  if (sum == a) console.log('YES'); else console.log('NO');
+</script>
+<script id="complete-numbers" sample-input="" sample-output="" comment="输出10000以内所有的完全数" type="xxx">
+  var a =0;
+  var sum = 0;
+  for (var i = 1; i <= 10000; i++) {
+    a = i;
+    sum = 0;
+    for (var j = 1; j <= (a / 2); j++) {
+      sum += a % j == 0 ? j : 0;
+    } 
+    if (sum == a) {console.log(sum)} ;
+  }
+</script>
+<script id="prime" sample-input="7" sample-output="YES" comment="判断一个数是否为素数" type="xxx">
+  var a = +prompt();
+  var isP = true;
+  for (var i = 2; i <= Math.sqrt(a); i++) {
+    if (a % i == 0) {
+      console.log('NO');
+      isP = false;
+      break;
+    }
+  }
+
+  if (isP) {console.log('YES')};
+
+</script>
+<script id="primes" sample-input="" sample-output="" comment="输出100以内所有的素数" type="xxx">
+  var a = 0;
+  var isP;
+  for (var i = 1; i <= 100; i++) {
+    a = i;
+    isP = true;
+    for (var j = 2; j <= Math.sqrt(a); j++) {
+      if (a % j == 0) {
+        isP = false;
+        break;
+      }
+    }
+    if (isP) {console.log(i)};
+  }
+  
+</script>
+
+<script id="itob" sample-input="123" sample-output="123" comment="数字转换成字符串" type="">
+  
+</script>
+
+<script id="lcf&lcm" sample-input="12 9" sample-output="36 3" comment="给定两个数，求它们的最小公倍数和最大公约数" type="xxx">
+  var a = +prompt();
+  var b = +prompt();
+  var min = a > b ? b : a;
+  var max = a > b ? a : b;
+  var yue = min;
+  while(1){
+    if (a % yue == 0 && b % yue ==0) {
+      break;
+    }
+    yue--;
+  }
+
+  for (var i = 2; i < max; i++) {
+    if (max * i % min == 0) break;
+  }
+  if (min == 1) {
+    console.log(a * b);
+  }else console.log(i * max);
+
+  console.log(yue);
+
+</script>
+<script id="7" sample-input="" sample-output="" comment="敲7" type="xxx">
+  for (var i = 7; i <= 100; i++) {
+    if (i.toString().includes('7')) {
+      console.log(i);
+    }else if (i % 7 ==0) {
+      console.log(i);
+    }
+  }
+</script>
+<script id="sqrt" sample-input="2" sample-output="1.414" comment="不使用Math.sqrt，求一个非负数的平方根，至少精确到小数点后3位" type="">
+  
 </script>
