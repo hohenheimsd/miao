@@ -12,11 +12,11 @@ var hohenheimsd = function (){
     return arr;
   }
   //创建一个新数组，包含原数组中所有的非假值元素。例如false, null, 0, "", undefined, 和 NaN 都是被认为是“假值”。
-  var compact = array=>array.filter(array=>array);
+  var compact = array => array.filter(array=>array);
 
   //创建一个array与任何其他数组和/或值连接的新数组。
 
-  var concat = (array,...nums)=> array.concat(...nums);
+  var concat = (array,...nums) => array.concat(...nums);
 
 
   // difference(array, [values]) this method returns a new array.
@@ -25,7 +25,7 @@ var hohenheimsd = function (){
 
     var valArr = [].concat(...values);
 
-    return array.filter(x=>!valArr.includes(x));
+    return array.filter(x => !valArr.includes(x));
 
   };
 
@@ -77,18 +77,47 @@ var hohenheimsd = function (){
 
   var isInteger = value => Number.isInteger(value);
 
+  var isLength = value => Number.isInteger(value);
+
   var isMap = value => Object.prototype.toString.call(value) === "[object Map]";
 
   var isMatch = (object,source) => {
     if(object === source) return true;
-    var key = Object.keys(source)[0];
-    var val = Object.values(source)[0];
-    if(key in object && val == object[key]){
-      return true;
-    } else {
-      return false;
-    }
+
+    var [prop, val] = Object.entries(source)[0]
+
+    return object[prop] === val;
   };
+
+  var isMatchWith = (object, source, customiser) => {
+    let [prop, val] = Object.entries(source)[0]
+    return Boolean(customiser(object[prop], val))
+  };
+
+
+  var isNaN = value => {
+    if (!Number.isNaN){ 
+    Number.isNaN = function (n){
+        return typeof n === "number" && window.isNaN(n);   
+    };
+
+    return Number.isNaN(value);
+    }
+  }
+
+  var isNative = value => {};
+
+  var isNil = value => value === null || value === undefined;
+
+  var isNull = value => value === null;
+
+  var isNumber = value => Object.prototype.toString.call(value) === '[object Number]';
+
+  var isObject = value => value !== null && typeof value === 'object';
+
+
+
+
 
 
 
@@ -119,8 +148,6 @@ return {
 
     isEmpty: isEmpty,
 
-    isMatch: isMatch,
-
     isError: isError,
 
     isFinite: isFinite,
@@ -129,7 +156,26 @@ return {
 
     isInteger: isInteger,
 
+    isLength: isLength,
+
     isMap: isMap,
+
+    isMatch: isMatch,
+
+    isMatchWith: isMatchWith,
+
+    isNaN: isNaN,
+
+    isNil: isNil,
+
+    isNull: isNull,
+
+    isNumber: isNumber,
+
+    isObject: isObject,
+
+
+
 
 
 
