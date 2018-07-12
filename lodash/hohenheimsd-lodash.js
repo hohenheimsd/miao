@@ -29,15 +29,11 @@ var hohenheimsd = function (){
 
   };
 
-
   //_.differenceBy(array, [values], [iteratee=_.identity])
 
   var differenceBy = function(array,values,iterate){
 
   }
-
-
-
 
 
   var isArguments =  value => Object.prototype.toString.call(value) === '[object Arguments]';
@@ -97,12 +93,11 @@ var hohenheimsd = function (){
 
   var isNaN = value => {
     if (!Number.isNaN){ 
-    Number.isNaN = function (n){
+        Number.isNaN = function (n){
         return typeof n === "number" && window.isNaN(n);   
-    };
-
-    return Number.isNaN(value);
+        };
     }
+    return Number.isNaN(value);
   }
 
   var isNative = value => {};
@@ -113,12 +108,7 @@ var hohenheimsd = function (){
 
   var isNumber = value => Object.prototype.toString.call(value) === '[object Number]';
 
-  var isObject = value => value !== null && typeof value === 'object';
-
-
-
-
-
+  var isObject = value => value !== null && typeof value === 'object' || typeof value === 'function';
 
 
 return {
@@ -173,13 +163,6 @@ return {
     isNumber: isNumber,
 
     isObject: isObject,
-
-
-
-
-
-
-
 
 }
 
