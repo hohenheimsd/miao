@@ -21,7 +21,7 @@ var hohenheimsd = function (){
 
   // difference(array, [values]) this method returns a new array.
 
-  var difference = function(array,values){
+  var difference = function(array,...values){
 
     var valArr = [].concat(...values);
 
