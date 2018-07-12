@@ -1,4 +1,4 @@
-<script id="ch0105/01">
+<script id="ch0105/01" type="xxx">
   var a = +prompt("请输入学生人数");
   var sum = 0;
   for (var i = 0; i < a; i++) {
@@ -9,7 +9,7 @@
   console.log(ave);
 </script>
 
-<script id="ch0105/02/">
+<script id="ch0105/02/" type="xxx">
   var sum = 0;
   for (var i = 0; i < 12; i++) {
     sum += Number(prompt(i + 1 + ' 月末结余'));
@@ -20,7 +20,7 @@
   console.log('平均月末结余为: ' + '$' + ave);
 </script>
 
-<script id="ch0105/03">
+<script id="ch0105/03" type="xxx">
   var num = +prompt('请输入样本数量：');
   var sum = 0;
   var tmp = 0;
@@ -33,7 +33,7 @@
   console.log(ave);
 </script>
 
-<script id="ch0105/20">
+<script id="ch0105/20" type="xxx">
   var h = +prompt('请输入一个高度： ');
   var s = h;
   for (var i = 0; i < 9; i++) {
@@ -45,7 +45,7 @@
   console.log(h/2);
 </script>
 
-<script id="ch0105/19">
+<script id="ch0105/19" type="xxx">
 
   var roof = +prompt('屋顶数：');
   var x = 0;
@@ -69,7 +69,7 @@
 
 </script>
   
-<script id="ch0105/17">
+<script id="ch0105/17" type="xxx">
 
   var a = +prompt('fibonacci某一项');
   function fibonacci(num) {
@@ -125,7 +125,7 @@
   var b = 0;
   var num = 0;
   var sum = 0;
-  for (var i = 100; i <= 10000; i++) {
+  for (var i = 100; i <= 100000; i++) {
     a  = i;
     b = 0;
     num = a.toString().length;
@@ -140,7 +140,7 @@
   }
 </script>
 <script id="palindrom" sample-input="12321" sample-output="YES" comment="判断一个非负整数是否为回文数字" type="xxx">
-  var a = +prompt();
+  var a = prompt();
   var s = a.toString();
   var num = s.length;
   var n1 = '';
@@ -191,6 +191,7 @@
 
 </script>
 <script id="primes" sample-input="" sample-output="" comment="输出100以内所有的素数" type="xxx">
+
   var a = 0;
   var isP;
   for (var i = 1; i <= 100; i++) {
@@ -207,8 +208,18 @@
   
 </script>
 
-<script id="itob" sample-input="123" sample-output="123" comment="数字转换成字符串" type="">
-  
+<script id="itob" sample-input="123" sample-output="123" comment="数字转换成字符串" type="xxx">
+
+  var a = +prompt();
+  var b = 0;
+  var s = '';
+  do{
+    b = a % 10;
+    s = String.fromCharCode(b + 48) + s;
+    a = (a - b) / 10;
+  }while(a > 0)
+  console.log(s);
+
 </script>
 
 <script id="lcf&lcm" sample-input="12 9" sample-output="36 3" comment="给定两个数，求它们的最小公倍数和最大公约数" type="xxx">
@@ -224,7 +235,7 @@
     yue--;
   }
 
-  for (var i = 2; i < max; i++) {
+  for (var i = 1; i < max; i++) {
     if (max * i % min == 0) break;
   }
   if (min == 1) {
@@ -237,12 +248,174 @@
 <script id="7" sample-input="" sample-output="" comment="敲7" type="xxx">
   for (var i = 7; i <= 100; i++) {
     if (i.toString().includes('7')) {
-      console.log(i.toString());
+      console.log(i);
     }else if (i % 7 ==0) {
-      console.log(i.toString());
+      console.log(i);
     }
   }
 </script>
-<script id="sqrt" sample-input="2" sample-output="1.414" comment="不使用Math.sqrt，求一个非负数的平方根，至少精确到小数点后3位" type="">
-  
+<script id="sqrt" sample-input="2" sample-output="1.414" comment="不使用Math.sqrt，求一个非负数的平方根，至少精确到小数点后3位" type="xxx">
+  var a = +prompt();
+  var x = a;
+
+  var min = 0;
+  var max = a;
+  while(max - min > 0.0000001){
+    x = (min + max) / 2;
+    if ( x * x > a) {
+      max = x;
+    }else if (x * x < a){
+      min = x;
+    }else {
+      break;
+    }
+  }
+  console.log(x);
+
+
+  // var counter = 0;
+  // while(counter<5){
+  //   counter++;
+  //   x = (2 + x**2) / (2 * x); 
+  // }
+  // console.log(x);
+
+
 </script>
+
+
+<script type='xxx' comment='分解质因数'>
+  
+  function fenjie(num){
+    var str = '';
+
+    function fenjie2(num,ys=2){
+      if (num == 1) return;
+      if (num % ys == 0) {
+        str += ys + '*';
+        num /= ys;
+        fenjie2(num,ys);
+      }else fenjie2(num,++ys);
+    }
+    fenjie2(num);
+    str = str.slice(0,str.length-1);
+    return str;
+  }
+
+
+</script>
+
+<script type="xxx" comment="能被20内所有数整除的最小数">
+  function minBei(num){
+    var tmp = 1;
+    for (var i = 1; i <= num; i++) {
+      tmp = minBei2(i,tmp);
+    }
+    function minBei2(a,b){
+      var min = a > b ? b : a;
+      var max = a > b ? a : b;
+      for (var i = 1; i < max; i++) {
+        if (max * i % min == 0) break;
+      }
+      if (min == 1) {
+        return (a * b);
+      }else return (i * max);
+    }
+    return tmp;
+  }
+
+</script>
+
+<script type="xxx" comment='将一个数字的各位加起来求和。如果该和大于10，将得到这个数字继续进行这种操作，直到其只有一位数。' >
+  function sumNum(num){
+    num = num.toString();
+    function sumNum2(num){
+      var sum = 0;
+      for (var x of num){
+        sum += Number(x);
+      }
+      if (sum >= 10) {
+        return sumNum2(sum.toString());
+      }else {
+        return sum;
+      }
+    }
+    return sumNum2(num);
+  }
+</script>
+
+<script type="xxx">
+  var countPrimesx = function(n) {
+  if (n < 3) {
+    return 0
+  }
+
+  var f = new Array(n).fill(true)
+
+  var count = n / 2 | 0
+  for(var i = 3; i * i < n; i += 2) {
+    // if (!f[i]) {
+    //   continue
+    // }
+
+    for(var j = i * i; j < n; j += 2*i) {
+      if (f[j]) {
+        --count
+        f[j] = false
+      }
+    }
+  }
+  
+  return count
+}
+</script>
+
+<script>
+  var findDiagonalOrder = function(matrix) {
+    var m = matrix.length;
+    var n = matrix[0].length;
+    var direction = 0;
+    var p = [];
+    
+    for(var x in matrix){
+        var b = Array(x).fill(null);
+        var a = Array(matrix.length - x -1).fill(null);
+        matrix[x].unshift(...b);
+        matrix[x].push(...a);
+    }
+    
+    var x = m - 1;
+    var y = 0;
+    
+    for(var i = 0;i < m+n-1; i++){
+        direction = i % 2 == 0 ? 1 : 0;
+
+        if(direction){
+            while(1){
+                p.push(matrix[x][y]);
+                y++;
+                if(y > m -1){
+                    x += 1;
+                    y -= 1;
+                    break;
+                }
+            }
+        }else {
+            while(1){
+                p.push(matrix[x][y]);
+                y--;
+                if(y == -1){
+                    x += 1;
+                    y += 1;
+                    break;
+                }
+                  
+            }
+
+        }
+        
+    }
+    return p;
+};
+</script>
+
