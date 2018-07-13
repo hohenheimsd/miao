@@ -44,7 +44,7 @@ var hohenheimsd = function (){
 
   var isArrayLike = value => value.length ? (typeof value != 'string' && typeof value != 'function' && typeof value.length == 'number' && value.length >= 0 && value.length < 2**32) : false;
 
-  var isBoolean = value => typeof value === 'boolean';
+  var isBoolean = value => Object.prototype.toString.call(value) === '[object Boolean]';
 
   var isDate = value => Object.prototype.toString.call(value) === '[object Date]';
 
@@ -86,19 +86,15 @@ var hohenheimsd = function (){
   };
 
   var isMatchWith = (object, source, customiser) => {
-    let [prop, val] = Object.entries(source)[0]
-    return Boolean(customiser(object[prop], val))
+    let [prop, val] = Object.entries(source)[0];
+    return Boolean(customiser(object[prop], val));
   };
 
 
   var isNaN = value => {
-    if (!Number.isNaN){ 
-        Number.isNaN = function (n){
-        return typeof n === "number" && window.isNaN(n);   
-        };
-    }
-    return Number.isNaN(value);
-  }
+        return typeof value === "number" && window.isNaN(value);   
+  };
+  
 
   var isNative = value => {};
 
