@@ -1,7 +1,7 @@
 var hohenheimsd = function (){
 
-
-  //将数组（array）拆分成多个 size 长度的区块，并将这些区块组成一个新数组。 如果array无法被分割成全部等长的区块，那么最后剩余的元素将组成一个区块。
+  //_.chunk(array, [size=1])  
+  //Creates an array of elements split into groups the length of size. If array can't be split evenly, the final chunk will be the remaining elements.
   function chunk (array, size = 1) {
     var arr = [];
     var i = 0;
@@ -11,32 +11,51 @@ var hohenheimsd = function (){
     }
     return arr;
   }
-  //创建一个新数组，包含原数组中所有的非假值元素。例如false, null, 0, "", undefined, 和 NaN 都是被认为是“假值”。
+
+  //_.compact(array)  Creates an array with all falsey values removed. The values false, null, 0, "", undefined, and NaN are falsey.
   var compact = array => array.filter(array=>array);
 
-  //创建一个array与任何其他数组和/或值连接的新数组。
-
+  //_.concat(array, [values])  Creates a new array concatenating array with any additional arrays and/or values.
   var concat = (array,...nums) => array.concat(...nums);
 
 
   // difference(array, [values]) this method returns a new array.
-
   var difference = function(array,...values){
-
     var valArr = [].concat(...values);
-
     return array.filter(x => !valArr.includes(x));
-
   };
 
-  //_.differenceBy(array, [values], [iteratee=_.identity])
+  // _.drop(array, [n=1])  Creates a slice of array with n elements dropped from the beginning.
+  var drop = (value, n = 1) => value.slice(n);
 
-  var differenceBy = function(array,values,iterate){
+  //_.dropRight(array, [n=1]) Creates a slice of array with n elements dropped from the end.
+  var dropRight = (value, n = 1) => value.slice(0,value.length - n);
 
-  }
+  // _.fill(array, value, [start=0], [end=array.length]) Fills elements of array with value from start up to, but not including, end.
+  var fill = (array, value, start = 0, end = array.length) => array.fill(value, start, end);
 
+  //_.head(array)
+  var head = value => value[0];
 
+  //_.flatten(array) Flattens array a single level deep.
+  var flatten = value => value.reduce((accumulator,currentValue)=>accumulator.concat(currentValue),[]);
 
+  //_.flattenDeep(array) Recursively flattens array.
+  var flattenDeep = value => {
+    var tmp = [];
+    var flattenDeep2 = value =>{
+      for(var i of value){
+        if(isArray(i)){
+          flattenDeep2(i);
+        }else {
+          tmp = tmp.concat(i);
+        }
+      }
+    }
+    flattenDeep2(value);
+
+    return tmp;
+  };
 
   var isArguments =  value => Object.prototype.toString.call(value) === '[object Arguments]';
 
@@ -137,8 +156,6 @@ return {
 
     difference: difference,
 
-    differenceBy: differenceBy,
-
     isArguments: isArguments,
 
     isArray: isArray,
@@ -202,6 +219,19 @@ return {
     isWeakMap: isWeakMap,
 
     isWeakSet: isWeakSet,
+
+    drop: drop,
+
+    dropRight: dropRight,
+
+    fill: fill,
+
+    head: head,
+
+    flatten: flatten,
+    
+    flattenDeep: flattenDeep,
+
 
 }
 
