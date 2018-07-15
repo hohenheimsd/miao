@@ -29,7 +29,7 @@ var hohenheimsd = function (){
   var drop = (value, n = 1) => value.slice(n);
 
   //_.dropRight(array, [n=1]) Creates a slice of array with n elements dropped from the end.
-  var dropRight = (value, n = 1) => value.slice(0,value.length - n);
+  var dropRight = (value, n = 1) => (value.length - n) <= 0 ? value.slice(0,0) : value.slice(0,value.length - n);
 
   // _.fill(array, value, [start=0], [end=array.length]) Fills elements of array with value from start up to, but not including, end.
   var fill = (array, value, start = 0, end = array.length) => array.fill(value, start, end);
@@ -83,6 +83,36 @@ var hohenheimsd = function (){
       }
     } else {
       return !Boolean(value.length);
+    }
+  };
+
+  //_.isEqual(value, other) Performs a deep comparison between two values to determine if they are equivalent.
+
+  var isEqual = (value, other) => {
+    let type1 = Object.prototype.toString.call(value).slice(8, -1);
+    let type2 = Object.prototype.toString.call(other).slice(8, -1);
+
+    if (type1 !== type2) return false;
+
+    if (isNaN(value) && isNaN(other)) return true;
+
+    if (value === other) return true;
+
+    if (type1 === 'String' || type1 === 'Number' || type1 === 'Bool' || type1 === 'Date')  {
+       return value.valueOf() === other.valueOf() ? true : false;
+    }
+
+    if (type1 === 'Map' || type1 === 'Set') {
+      value = Array.from(value);
+      other = Array.from(other);
+      type1 = 'Array';
+    }
+
+    if (type1 === 'Array' || type1 === 'Object') {
+      let keys1 = Object.keys(value);
+      let keys2 = Object.keys(other);
+      if (keys1.length !== keys2.length) return false;  
+      return keys1.every(key => isEqWith(value[key], other[key]));
     }
   };
 
@@ -172,6 +202,8 @@ return {
 
     isEmpty: isEmpty,
 
+    isEqual: isEqual,
+
     isError: isError,
 
     isFinite: isFinite,
@@ -229,7 +261,7 @@ return {
     head: head,
 
     flatten: flatten,
-    
+
     flattenDeep: flattenDeep,
 
 
