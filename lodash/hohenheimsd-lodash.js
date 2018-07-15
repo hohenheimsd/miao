@@ -1,5 +1,11 @@
 var hohenheimsd = function (){
 
+  function isNegZero(n) {
+    n = Number( n );
+    return (n === 0) && (1 / n === -Infinity);
+  }
+
+
   //_.chunk(array, [size=1])  
   //Creates an array of elements split into groups the length of size. If array can't be split evenly, the final chunk will be the remaining elements.
   function chunk (array, size = 1) {
@@ -34,11 +40,14 @@ var hohenheimsd = function (){
   // _.fill(array, value, [start=0], [end=array.length]) Fills elements of array with value from start up to, but not including, end.
   var fill = (array, value, start = 0, end = array.length) => array.fill(value, start, end);
 
+  //_.fromPairs(pairs) 
+  var fromPairs = value => value.reduce((accumulator, currentValue) => (accumulator[currentValue[0]] = currentValue[1],accumulator), {});
+
   //_.head(array)
   var head = value => value[0];
 
   //_.flatten(array) Flattens array a single level deep.
-  var flatten = value => value.reduce((accumulator,currentValue)=>accumulator.concat(currentValue),[]);
+  var flatten = value => value.reduce((accumulator,currentValue) => accumulator.concat(currentValue),[]);
 
   //_.flattenDeep(array) Recursively flattens array.
   var flattenDeep = value => {
@@ -56,6 +65,10 @@ var hohenheimsd = function (){
 
     return tmp;
   };
+
+  //_.indexOf(array, value, [fromIndex=0])
+  var indexOf = (array, value, index = 0) => isNegZero(value) || index < 0 ? array.lastIndexOf(value,Math.abs(index)) : array.indexOf(value,index) ;
+
 
   var isArguments =  value => Object.prototype.toString.call(value) === '[object Arguments]';
 
@@ -186,6 +199,20 @@ return {
 
     difference: difference,
 
+    drop: drop,
+
+    dropRight: dropRight,
+
+    fill: fill,
+
+    head: head,
+
+    flatten: flatten,
+
+    flattenDeep: flattenDeep,
+
+    fromPairs: fromPairs,
+
     isArguments: isArguments,
 
     isArray: isArray,
@@ -252,17 +279,7 @@ return {
 
     isWeakSet: isWeakSet,
 
-    drop: drop,
 
-    dropRight: dropRight,
-
-    fill: fill,
-
-    head: head,
-
-    flatten: flatten,
-
-    flattenDeep: flattenDeep,
 
 
 }
