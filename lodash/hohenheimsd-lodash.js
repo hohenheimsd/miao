@@ -36,6 +36,8 @@ var hohenheimsd = function (){
   }
 
 
+
+
   var isArguments =  value => Object.prototype.toString.call(value) === '[object Arguments]';
 
   var isArray =  value => Object.prototype.toString.call(value) === '[object Array]';
@@ -90,12 +92,10 @@ var hohenheimsd = function (){
     return Boolean(customiser(object[prop], val));
   };
 
-
   var isNaN = value => {
-        return typeof value === "number" && window.isNaN(value);   
+        return typeof value === "object" && window.isNaN(value) || typeof value === "number" && window.isNaN(value);   
   };
   
-
   var isNative = value => {};
 
   var isNil = value => value === null || value === undefined;
@@ -106,6 +106,27 @@ var hohenheimsd = function (){
 
   var isObject = value => value !== null && typeof value === 'object' || typeof value === 'function';
 
+  var isObjectLike = value => value !== null && typeof value === 'object';
+
+  var isPlainObject = value => value.__proto__ === Object.prototype;
+
+  var isRegExp = value => Object.prototype.toString.call(value) === "[object RegExp]";
+
+  var isSafeInteger = value => typeof value === 'number' && value >= Number.MIN_SAFE_INTEGER && value <= Number.MAX_SAFE_INTEGER && Number.isInteger(value);
+
+  var isSet =value => Object.prototype.toString.call(value) === '[object Set]';
+
+  var isString = value => typeof value === 'string';
+
+  var isSymbol = value => typeof value === 'symbol';
+
+  var isTypedArray =  value => /\[object\s.+Array\]/.test(Object.prototype.toString.call(value));
+
+  var isUndefined = value => typeof value === 'undefined';
+
+  var isWeakMap = value => Object.prototype.toString.call(value) === '[object WeakMap]';
+
+  var isWeakSet = value => Object.prototype.toString.call(value) === '[object WeakSet]';
 
 return {
     chunk: chunk,
@@ -159,6 +180,28 @@ return {
     isNumber: isNumber,
 
     isObject: isObject,
+
+    isObjectLike: isObjectLike,
+
+    isPlainObject:isPlainObject,
+
+    isRegExp: isRegExp,
+
+    isSafeInteger: isSafeInteger,
+
+    isSet: isSet,
+
+    isString: isString,
+
+    isSymbol: isSymbol,
+
+    isTypedArray: isTypedArray,
+
+    isUndefined: isUndefined,
+
+    isWeakMap: isWeakMap,
+
+    isWeakSet: isWeakSet,
 
 }
 
