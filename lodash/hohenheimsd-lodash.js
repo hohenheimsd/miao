@@ -1,14 +1,8 @@
 var hohenheimsd = function (){
 
-  function isNegZero(n) {
-    n = Number( n );
-    return (n === 0) && (1 / n === -Infinity);
-  }
-
-
   //_.chunk(array, [size=1])  
   //Creates an array of elements split into groups the length of size. If array can't be split evenly, the final chunk will be the remaining elements.
-  function chunk (array, size = 1) {
+  var chunk = (array, size = 1) => {
     var arr = [];
     var i = 0;
     while(i < array.length){
@@ -26,10 +20,22 @@ var hohenheimsd = function (){
 
 
   // difference(array, [values]) this method returns a new array.
-  var difference = function(array,...values){
+  var difference = (array, ...values) =>{
     var valArr = [].concat(...values);
     return array.filter(x => !valArr.includes(x));
   };
+
+
+  //_.differenceBy(array, [values], [iteratee=_.identity]) 
+  var differenceBy = (array, values, iteratee = hohenheimsd.identity) =>{
+    let detector = hohenheimsd.iteratee(iteratee);                       
+    values = values.map(x => detector(x));
+    
+    return array.filter(x => !values.includes(detector(x)));
+  };
+
+  //_.differenceWith(array, [values], [comparator])
+  var differenceWith = (array, values, comparator) => array.filter(item => !values.some(it => comparator(it,item)));
 
   // _.drop(array, [n=1])  Creates a slice of array with n elements dropped from the beginning.
   var drop = (value, n = 1) => value.slice(n);
@@ -67,7 +73,57 @@ var hohenheimsd = function (){
   };
 
   //_.indexOf(array, value, [fromIndex=0])
-  var indexOf = (array, value, index = 0) => isNegZero(value) || index < 0 ? array.lastIndexOf(value,Math.abs(index)) : array.indexOf(value,index) ;
+  var indexOf = (array, value, index = 0) => index < 0 ?  array.indexOf(value, array.length + index - 1) : array.indexOf(value,index) ;
+
+  //_.initial(array) Gets all but the last element of array.
+
+  var initial = value => value.slice(0,value.length - 1);
+
+  //_.intersection([arrays]) 
+  //Creates an array of unique values that are included in all given arrays using SameValueZero for equality comparisons. 
+  //The order and references of result values are determined by the first array.
+  
+  //var intersection = (...value) => Array.from(value.reduce((accumulator,currentValue)=>new Set(currentValue.filter(x => accumulator.has(x))), (new Set(value[0]))));
+  var intersection = (...value) => hohenheimsd.uniq(value.reduce((accumulator,currentValue)=>accumulator.filter(x=>currentValue.includes(x))));
+
+
+
+
+  var uniq = value => Array.from(new Set(value));
+
+  var negate = value => (...value2) => !value(...value2);
+
+
+  //_.identity(value)
+  var identity = value => value;
+
+  var iteratee = func => {
+    if(isString(func)){       //如果是字符串就判断对象的属性
+      return function (obj){
+        return obj[func];
+      }
+    }
+
+    if(isObjectLike(func)){
+      if(isArray(func)){      //如果是数组就转变为对象去判断
+        return function (obj){
+          return isMatch(obj, fromPairs([func])); 
+        }
+      }
+      return function(obj) {    //如果是对象就直接用isMatch对比判断
+        return isMatch(obj,func);
+      }
+    }
+
+    if(isFunction(func)){     //如果是函数 直接返回
+      return func;
+    }
+
+    return function () {
+      return false;
+    }
+
+  };
 
 
   var isArguments =  value => Object.prototype.toString.call(value) === '[object Arguments]';
@@ -127,6 +183,8 @@ var hohenheimsd = function (){
       if (keys1.length !== keys2.length) return false;  
       return keys1.every(key => isEqWith(value[key], other[key]));
     }
+
+    return value === other;
   };
 
   var isError = value => value instanceof Error;
@@ -141,13 +199,7 @@ var hohenheimsd = function (){
 
   var isMap = value => Object.prototype.toString.call(value) === "[object Map]";
 
-  var isMatch = (object,source) => {
-    if(object === source) return true;
-
-    var [prop, val] = Object.entries(source)[0]
-
-    return object[prop] === val;
-  };
+  var isMatch = (object,source) => hohenheimsd.isEqual(object[Object.keys(source)[0]],Object.values(source)[0]);
 
   var isMatchWith = (object, source, customiser) => {
     let [prop, val] = Object.entries(source)[0];
@@ -199,6 +251,10 @@ return {
 
     difference: difference,
 
+    differenceBy: differenceBy,
+
+    differenceWith: differenceWith,
+
     drop: drop,
 
     dropRight: dropRight,
@@ -212,6 +268,30 @@ return {
     flattenDeep: flattenDeep,
 
     fromPairs: fromPairs,
+
+    indexOf: indexOf,
+
+    initial: initial,
+
+    intersection: intersection,
+    
+    uniq: uniq,
+
+
+
+
+
+
+    identity: identity,
+
+    iteratee: iteratee,
+
+
+
+
+
+
+
 
     isArguments: isArguments,
 
@@ -279,8 +359,7 @@ return {
 
     isWeakSet: isWeakSet,
 
-
-
+    negate: negate,
 
 }
 
