@@ -53,6 +53,14 @@ var hohenheimsd = function (){
     return array2;
   };
 
+
+  var dropWhile = (array, predicate = hohenheimsd.identity) => {
+    let detector = hohenheimsd.iteratee(predicate); 
+    var array2 = Array.from(array);
+    array2.reduce((accumulator,currentValue)=> (accumulator && detector(currentValue) && array2.pop() ,accumulator && detector(currentValue) ? true : false), true);
+    return array2;
+  };
+
   // _.fill(array, value, [start=0], [end=array.length]) Fills elements of array with value from start up to, but not including, end.
   var fill = (array, value, start = 0, end = array.length) => array.fill(value, start, end);
 
