@@ -58,7 +58,7 @@ var hohenheimsd = function (){
 
 
   //_.findIndex(array, [predicate=_.identity], [fromIndex=0])
-  var findIndex = (array, predicate = hohenheimsd.identity, fromIndex) => {
+  var findIndex = (array, predicate = hohenheimsd.identity, fromIndex = 0) => {
     let detector = hohenheimsd.iteratee(predicate); 
     for(let i = fromIndex; i < array.length; i++) {
       if (detector(array[i])) return i;
@@ -146,7 +146,7 @@ var hohenheimsd = function (){
   
   //var intersection = (...value) => Array.from(value.reduce((accumulator,currentValue)=>new Set(currentValue.filter(x => accumulator.has(x))), (new Set(value[0]))));
   //升级版 支持大于二个数组 支持去重
-  var intersection = (...value) => hohenheimsd.uniq(value.reduce((accumulator,currentValue)=>accumulator.filter(x=>currentValue.includes(x))));
+  var intersection = (...value) => hohenheimsd.uniq(value.reduce((accumulator,currentValue) => accumulator.filter(x => currentValue.includes(x))));
 
   //_.intersectionBy([arrays], [iteratee=_.identity])
   //升级版 支持大于二个数组 支持去重
@@ -154,15 +154,15 @@ var hohenheimsd = function (){
 
     var detector = hohenheimsd.iteratee(value.pop());
 
-    return hohenheimsd.uniqBy(value.reduce((accumulator,currentValue)=>{
+    return hohenheimsd.uniqBy(value.reduce((accumulator,currentValue) => {
 
       currentValue = currentValue.map(x => detector(x));
 
-      return accumulator.filter(x=>currentValue.includes(detector(x)));
+      return accumulator.filter(x => currentValue.includes(detector(x)));
     }), detector);
   }
 
-  
+
   var uniq = value => Array.from(new Set(value));
 
   var uniqBy = (value ,iteratee = hohenheimsd.identity) => {
