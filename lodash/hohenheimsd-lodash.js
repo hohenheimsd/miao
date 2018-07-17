@@ -43,8 +43,36 @@ var hohenheimsd = function (){
   //_.dropRight(array, [n=1]) Creates a slice of array with n elements dropped from the end.
   var dropRight = (value, n = 1) => (value.length - n) <= 0 ? value.slice(0,0) : value.slice(0,value.length - n);
 
+  //_.dropRightWhile(array, [predicate=_.identity])
+  //a.reduceRight((accumulator,currentValue)=> (accumulator && currentValue != 4 && a.pop() ,accumulator && currentValue != 4 ? true : false), true);
+
+  var dropRightWhile = (array, predicate = hohenheimsd.identity) => {
+    let detector = hohenheimsd.iteratee(predicate); 
+    var array2 = Array.from(array);
+    array2.reduceRight((accumulator,currentValue)=> (accumulator && detector(currentValue) && array2.pop() ,accumulator && detector(currentValue) ? true : false), true);
+    return array2;
+  };
+
   // _.fill(array, value, [start=0], [end=array.length]) Fills elements of array with value from start up to, but not including, end.
   var fill = (array, value, start = 0, end = array.length) => array.fill(value, start, end);
+
+
+  //_.findIndex(array, [predicate=_.identity], [fromIndex=0])
+  var findIndex = (array, predicate = hohenheimsd.identity, fromIndex) => {
+    let detector = hohenheimsd.iteratee(predicate); 
+    for(let i = fromIndex; i < array.length; i++) {
+      if (detector(array[i])) return i;
+    }
+  };
+
+  //_.findLastIndex(array, [predicate=_.identity], [fromIndex=array.length-1])
+  //This method is like _.findIndex except that it iterates over elements of collection from right to left.
+  var findLastIndex = (array, predicate = hohenheimsd.identity, fromIndex = array.length-1) => {
+    let detector = hohenheimsd.iteratee(predicate); 
+    for(let i = fromIndex; i >= 0; i--) {
+      if (detector(array[i])) return i;
+    }
+  };
 
   //_.fromPairs(pairs) 
   var fromPairs = value => value.reduce((accumulator, currentValue) => (accumulator[currentValue[0]] = currentValue[1],accumulator), {});
@@ -57,26 +85,59 @@ var hohenheimsd = function (){
 
   //_.flattenDeep(array) Recursively flattens array.
   var flattenDeep = value => {
-    var tmp = [];
+    var array = [];
     var flattenDeep2 = value =>{
       for(var i of value){
         if(isArray(i)){
           flattenDeep2(i);
         }else {
-          tmp = tmp.concat(i);
+          array.push(i);
         }
       }
     }
     flattenDeep2(value);
 
-    return tmp;
+    return array;
   };
+
+  //_.flattenDepth(array, [depth=1]) Recursively flatten array up to depth times.
+  var flattenDepth = (array, depth=1) => {
+
+    if (depth === 0) return array;
+    //每层创建一个空数组逐个concat
+    return flattenDepth(array.reduce((accumulator, currentValue) => accumulator.concat(currentValue), []), --depth); 
+
+    //另外一种写法 
+    /*
+    var p = [];
+    depth++;
+    var flattenDeep2 = (value,deep) =>{
+      if(deep === depth) {
+        p.push(value);                
+        return;                           //层数够的时候push后返回
+      } 
+      for(var i of value){
+        if(isArray(i)){
+          flattenDeep2(i,++deep);
+        }else {
+          p.push(i);
+        }
+      }
+    }
+    flattenDeep2(array,0);
+    return p;
+     */
+  }; 
+
+
+  var reduce = (ary, reducer, initialValue) => (ary.forEach(x => initialValue = reducer(x, initialValue)),initialValue);
+    
+  var filter = (ary, test) => ary.reduce((accumulator,currentValue)=> test(currentValue) ? (accumulator.push(currentValue),accumulator) : accumulator , []);
 
   //_.indexOf(array, value, [fromIndex=0])
   var indexOf = (array, value, index = 0) => index < 0 ?  array.indexOf(value, array.length + index - 1) : array.indexOf(value,index) ;
 
   //_.initial(array) Gets all but the last element of array.
-
   var initial = value => value.slice(0,value.length - 1);
 
   //_.intersection([arrays]) 
@@ -84,12 +145,38 @@ var hohenheimsd = function (){
   //The order and references of result values are determined by the first array.
   
   //var intersection = (...value) => Array.from(value.reduce((accumulator,currentValue)=>new Set(currentValue.filter(x => accumulator.has(x))), (new Set(value[0]))));
+  //升级版 支持大于二个数组 支持去重
   var intersection = (...value) => hohenheimsd.uniq(value.reduce((accumulator,currentValue)=>accumulator.filter(x=>currentValue.includes(x))));
 
+  //_.intersectionBy([arrays], [iteratee=_.identity])
+  //升级版 支持大于二个数组 支持去重
+  var intersectionBy = (...value) => {
 
+    var detector = hohenheimsd.iteratee(value.pop());
 
+    return hohenheimsd.uniqBy(value.reduce((accumulator,currentValue)=>{
 
+      currentValue = currentValue.map(x => detector(x));
+
+      return accumulator.filter(x=>currentValue.includes(detector(x)));
+    }), detector);
+  }
+
+  
   var uniq = value => Array.from(new Set(value));
+
+  var uniqBy = (value ,iteratee = hohenheimsd.identity) => {
+    var detector = hohenheimsd.iteratee(iteratee);
+
+    var array = [];
+
+    value.forEach(x => {
+      array.some(y => detector(y) === detector(x)) ? array : (array.push(x),array);
+    });
+
+    return array;
+  };
+
 
   var negate = value => (...value2) => !value(...value2);
 
@@ -125,7 +212,7 @@ var hohenheimsd = function (){
 
   };
 
-
+  
   var isArguments =  value => Object.prototype.toString.call(value) === '[object Arguments]';
 
   var isArray =  value => Object.prototype.toString.call(value) === '[object Array]';
@@ -259,13 +346,21 @@ return {
 
     dropRight: dropRight,
 
+    dropRightWhile: dropRightWhile,
+
     fill: fill,
+
+    findIndex: findIndex,
+
+    findLastIndex: findLastIndex,
 
     head: head,
 
     flatten: flatten,
 
     flattenDeep: flattenDeep,
+
+    flattenDepth: flattenDepth,
 
     fromPairs: fromPairs,
 
@@ -274,9 +369,12 @@ return {
     initial: initial,
 
     intersection: intersection,
+
+    intersectionBy: intersectionBy,
     
     uniq: uniq,
 
+    uniqBy: uniqBy,
 
 
 
