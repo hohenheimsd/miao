@@ -356,6 +356,8 @@ return {
 
     dropRightWhile: dropRightWhile,
 
+    dropWhile: dropWhile,
+
     fill: fill,
 
     findIndex: findIndex,
