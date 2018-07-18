@@ -317,7 +317,7 @@ var hohenheimsd = function (){
   }
 
   var pullAt = (array, indexes) => {
-    //indexes去重
+    //indexes去重排序
     indexes = hohenheimsd.uniq(indexes).sort((x,y)=>x-y);
     var res = [];
     var len = indexes.length;
@@ -352,7 +352,92 @@ var hohenheimsd = function (){
     */
   };
 
-  //var remove = (array, predicate = hohenheimsd.identity) => ;
+  var remove = (array, iteratee = hohenheimsd.identity) => {
+    var detector = hohenheimsd.iteratee(iteratee);
+    var len = array.length;
+    var res = [];
+    for (var i = len - 1; i >= 0; i--){
+      if(detector(array[i])) res.unshift(array.splice(i,1)[0]);
+    }
+    return res;
+  };
+
+  var reverse = array => array.reverse();
+
+  var slice = (array, start = 0, end = array.length) => array.slice(start, end);
+
+  var sortedIndex = (array, value) => {
+    var index = array.findIndex(item => item >= value); 
+    return index === -1 ? array.length : index;
+  };
+
+  var sortedIndexBy = (array, value, iteratee = hohenheimsd.identity) => {
+    var detector = hohenheimsd.iteratee(iteratee);
+    var index = array.findIndex(item => detector(item) >= detector(value)); 
+    return index === -1 ? array.length : index;
+  };
+
+  var sortedIndexOf = (array, value) => {
+    var len = array.length;
+    if (array[0] > value || array[len - 1] < value) return -1
+    var left = 0;
+    var right = len - 1;
+    while(left <= right){
+      var mid = (right + left) / 2 | 0;
+      if(array[mid] === value){
+        while(array[mid] === value){
+          mid--;
+        }
+        return ++mid;
+      }else if(array[mid] > value){
+        right = --mid; 
+      } else {
+        left = ++mid;
+      } 
+    }
+
+    return -1;
+  };
+
+  var sortedLastIndex = (array, value) => {
+    var len = array.length;
+    for(var i = len - 1; i>=0; i--){
+      if(array[i] <= value) return ++i;
+    }
+    return 0;
+  };
+
+  var sortedLastIndexBy = (array, value, iteratee=hohenheimsd.identity) => {
+    var detector = iteratee(iteratee);
+    var len = array.length;
+    for(var i = len - 1; i>=0; i--){
+      if(detector(array[i]) <= etector(value)) return ++i;
+    }
+    return 0;
+  };
+
+  var sortedLastIndexOf = (array, value) => {
+    var len = array.length;
+    if (array[0] > value || array[len - 1] < value) return -1
+    var left = 0;
+    var right = len - 1;
+    while(left <= right){
+      var mid = (right + left) / 2 | 0;
+      if(array[mid] === value){
+        while(array[mid] === value){
+          mid++;
+        }
+        return --mid;
+      }else if(array[mid] > value){
+        right = --mid; 
+      } else {
+        left = ++mid;
+      } 
+    }
+
+    return -1;
+  };
+
 
 
   var uniq = value => Array.from(new Set(value));
@@ -596,6 +681,27 @@ return {
     pullAllWith: pullAllWith,
 
     pullAt: pullAt,
+
+    remove: remove,
+
+    reverse: reverse,
+
+    slice: slice,
+
+    sortedIndex: sortedIndex, 
+
+    sortedIndexBy: sortedIndexBy, 
+
+    sortedIndexOf: sortedIndexOf, 
+
+    sortedLastIndex: sortedLastIndex,
+
+    sortedLastIndexBy: sortedLastIndexBy,
+
+    sortedLastIndexOf: sortedLastIndexOf,
+
+
+
 
 
 
