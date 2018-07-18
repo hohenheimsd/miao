@@ -298,7 +298,7 @@ var hohenheimsd = function (){
     return removes;
   };
 
-  var remove = (array, predicate = hohenheimsd.identity) => ;
+  //var remove = (array, predicate = hohenheimsd.identity) => ;
 
 
   var uniq = value => Array.from(new Set(value));
