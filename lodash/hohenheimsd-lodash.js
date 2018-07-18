@@ -276,6 +276,26 @@ var hohenheimsd = function (){
     return array;
   }
 
+  var pullAt = (array, indexes) => {
+    //values去重
+    values = hohenheimsd.uniq(values);
+    var tmp = [];
+    var count = 0;
+    array.forEach((item, index)=>{
+      if(values.includes(item)){
+        tmp.push(index);
+        count++;
+      }else{
+        if(tmp.length !== 0){
+            array[tmp.shift()] = item;
+            tmp.push(index);   
+        }
+      }
+    });
+
+    array.length -= count;
+    return array;
+  };
 
   var uniq = value => Array.from(new Set(value));
 
