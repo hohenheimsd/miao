@@ -158,7 +158,7 @@ var hohenheimsd = function (){
 
   //_.intersectionBy([arrays], [iteratee=_.identity])
   //升级版 支持大于二个数组 支持去重
-  var intersectionBy = (...value) => {
+  var intersectionBy = (...value) => {     
 
     var detector = hohenheimsd.iteratee(value.pop());
 
@@ -168,6 +168,107 @@ var hohenheimsd = function (){
 
       return accumulator.filter(x => currentValue.includes(detector(x)));
     }), detector);
+  }
+
+  //升级版 支持大于二个数组 暂不支持去重
+  var intersectionWith = (...value) => {
+
+    var comparator = value.pop();
+
+    return value.reduce((accumulator,currentValue) => accumulator.filter(x => currentValue.some(y => comparator(x,y))));
+
+  }
+
+
+  var join = (array, separator = ',') => array.join(separator);
+
+  var last = array => array[array.length - 1];
+
+  var lastIndexOf = (array, value, fromIndex=array.length-1) => array.lastIndexOf(value, fromIndex);
+
+  var nth = (array, n = 0) => n < 0 ? array[array.length+n] : array[n];
+
+
+
+  //this method mutates array 不用filter 原地修改
+  var pull = (array, ...values) => {
+    //values去重
+    values = hohenheimsd.uniq(values);
+    var tmp = [];
+    var count = 0;
+    array.forEach((item, index)=>{
+      if(values.includes(item)){
+        tmp.push(index);
+        count++;
+      }else{
+        if(tmp.length !== 0){
+            array[tmp.shift()] = item;
+            tmp.push(index);   
+        }
+      }
+    });
+    array.length -= count;
+  };
+
+  var pullAll = (array, values) => {
+    //values去重
+    values = hohenheimsd.uniq(values);
+    var tmp = [];
+    var count = 0;
+    array.forEach((item, index)=>{
+      if(values.includes(item)){
+        tmp.push(index);
+        count++;
+      }else{
+        if(tmp.length !== 0){
+            array[tmp.shift()] = item;
+            tmp.push(index);   
+        }
+      }
+    });
+
+    array.length -= count;
+
+  };
+
+  var pullAllBy = (array, values, iteratee=hohenheimsd.identity) => {
+
+    var detector = hohenheimsd.iteratee(iteratee);
+    var values = values.map(x => detector(x));
+    var tmp = [];
+    var count = 0;
+    array.forEach((item, index)=>{
+      if(values.includes(detector(item))){
+        tmp.push(index);
+        count++;
+      }else{
+        if(tmp.length !== 0){
+            array[tmp.shift()] = item;
+            tmp.push(index);   
+        }
+      }
+    });
+
+    array.length -= count;
+
+  };
+
+  var pullAllWith = (array, values, comparator) => {
+    var tmp = [];
+    var count = 0;
+    array.forEach((item, index)=>{
+      if(values.some(x => comparator(x,item))){
+        tmp.push(index);
+        count++;
+      }else{
+        if(tmp.length !== 0){
+            array[tmp.shift()] = item;
+            tmp.push(index);   
+        }
+      }
+    });
+
+    array.length -= count;
   }
 
 
@@ -258,7 +359,7 @@ var hohenheimsd = function (){
 
     if (type1 !== type2) return false;
 
-    if (isNaN(value) && isNaN(other)) return true;
+    if (value !== value && other !== other) return true;
 
     if (value === other) return true;
 
@@ -276,7 +377,7 @@ var hohenheimsd = function (){
       let keys1 = Object.keys(value);
       let keys2 = Object.keys(other);
       if (keys1.length !== keys2.length) return false;  
-      return keys1.every(key => isEqWith(value[key], other[key]));
+      return keys1.every(key => isEqual(value[key], other[key]));
     }
 
     return value === other;
@@ -381,10 +482,28 @@ return {
     intersection: intersection,
 
     intersectionBy: intersectionBy,
+
+    intersectionWith: intersectionWith,
     
     uniq: uniq,
 
     uniqBy: uniqBy,
+
+    join: join,
+
+    last: last,
+
+    lastIndexOf: lastIndexOf,
+
+    nth: nth,
+
+    pull: pull,
+
+    pullAll: pullAll,
+
+    pullAllBy: pullAllBy,
+
+    pullAllWith: pullAllWith,
 
 
 
