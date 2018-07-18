@@ -28,7 +28,9 @@ var hohenheimsd = function (){
 
   //_.differenceBy(array, [values], [iteratee=_.identity]) 
   var differenceBy = (array, values, iteratee = hohenheimsd.identity) =>{
-    let detector = hohenheimsd.iteratee(iteratee);                       
+
+    let detector = hohenheimsd.iteratee(iteratee);     
+
     values = values.map(x => detector(x));
     
     return array.filter(x => !values.includes(detector(x)));
@@ -446,7 +448,7 @@ var hohenheimsd = function (){
 
   var take = (array, n = 1) => array.slice(0, n);
 
-  var takeRight = (array, n = 1) => array.slice(array.length - n);
+  var takeRight = (array, n = 1) => n >= array.length ? array.slice() : array.slice(array.length - n);
 
   var takeRightWhile = (array, predicate = hohenheimsd.identity) => {
     let detector = hohenheimsd.iteratee(predicate); 
@@ -454,6 +456,23 @@ var hohenheimsd = function (){
     array.reduceRight((accumulator,currentValue)=> (accumulator && detector(currentValue) && res.unshift(currentValue) ,accumulator && detector(currentValue) ? true : false), true);
     return res;
   };
+
+  var takeWhile = (array, predicate = hohenheimsd.identity) => {
+    let detector = hohenheimsd.iteratee(predicate); 
+    return array.slice(0, array.findIndex(x => !detector(x)));
+  }
+
+  var union = (...arrays) => hohenheimsd.uniq([].concat(...arrays));
+
+  var unionBy = (...arrays) => {
+    var iteratee = arrays.pop();
+    return hohenheimsd.uniqBy([].concat(...arrays),iteratee);
+  }
+
+  var unionWith = (...arrays) => {
+    var comparator = arrays.pop();
+    return hohenheimsd.uniqWith([].concat(...arrays),comparator);
+  }
 
   var uniq = value => Array.from(new Set(value));
 
@@ -468,6 +487,20 @@ var hohenheimsd = function (){
 
     return array;
   };
+
+  var uniqWith = (array, comparator) => {
+
+    var array = [];
+
+    value.forEach(x => {
+      array.some(y => comparator(x, y)) ? array : (array.push(x),array);
+    });
+
+  };
+
+  var unzip = array =>  (res = Array(array[0].length).fill(0).map(x => []), res.forEach((item, index)=> array.forEach( it => item.push(it[index]))), res);
+
+  var zip = (...arrays) => (res = Array(arrays[0].length).fill(0).map(x => []), res.forEach((item, index)=> arrays.forEach( it => item.push(it[index]))), res);
 
 
   var negate = value => (...value2) => !value(...value2);
@@ -675,10 +708,6 @@ return {
 
     intersectionWith: intersectionWith,
     
-    uniq: uniq,
-
-    uniqBy: uniqBy,
-
     join: join,
 
     last: last,
@@ -726,9 +755,18 @@ return {
     takeRight: takeRight,
 
     takeRightWhile: takeRightWhile,
-    
 
+    takeWhile: takeWhile,
 
+    uniq: uniq,
+
+    uniqBy: uniqBy,
+
+    uniqWith: uniqWith,
+
+    unzip: unzip,
+
+    zip: zip,
 
 
 
