@@ -87,7 +87,8 @@ var hohenheimsd = function (){
   var head = value => value[0];
 
   //_.flatten(array) Flattens array a single level deep.
-  var flatten = value => value.reduce((accumulator,currentValue) => accumulator.concat(currentValue),[]);
+  //var flatten = value => value.reduce((accumulator,currentValue) => accumulator.concat(currentValue),[]);
+  var flatten = value => [].concat(...value);
 
   //_.flattenDeep(array) Recursively flattens array.
   var flattenDeep = value => {
@@ -111,7 +112,8 @@ var hohenheimsd = function (){
 
     if (depth === 0) return array;
     //每层创建一个空数组逐个concat
-    return flattenDepth(array.reduce((accumulator, currentValue) => accumulator.concat(currentValue), []), --depth); 
+    //return flattenDepth(array.reduce((accumulator, currentValue) => accumulator.concat(currentValue), []), --depth); 
+    return flattenDepth([].concat(...array), --depth); 
 
     //另外一种写法 
     /*
@@ -136,7 +138,7 @@ var hohenheimsd = function (){
   }; 
 
 
-  var reduce = (ary, reducer, initialValue) => (ary.forEach(x => initialValue = reducer(x, initialValue)),initialValue);
+  var reduce = (ary, reducer, initialValue) => (ary.forEach((currentValue, index, array) => initialValue = reducer(initialValue, currentValue, index, array)),initialValue);
     
   var filter = (ary, test) => ary.reduce((accumulator,currentValue)=> test(currentValue) ? (accumulator.push(currentValue),accumulator) : accumulator , []);
 
@@ -190,6 +192,18 @@ var hohenheimsd = function (){
 
   //this method mutates array 不用filter 原地修改
   var pull = (array, ...values) => {
+
+    //从后往前删
+    var len = array.length;
+    for (var i = len - 1; i >= 0; i--){
+      if(values.includes(array[i])) array.splice(i,1);
+    }
+    return array;
+
+
+
+    /*
+    //从前往后删的方法 有点蠢
     //values去重
     values = hohenheimsd.uniq(values);
     var tmp = [];
@@ -208,9 +222,19 @@ var hohenheimsd = function (){
     array.length -= count;
 
     return array;
+    */
   };
 
   var pullAll = (array, values) => {
+    var len = array.length;
+    for (var i = len - 1; i >= 0; i--){
+      if(values.includes(array[i])) array.splice(i,1);
+    }
+    return array;
+
+
+
+    /*
     //values去重
     values = hohenheimsd.uniq(values);
     var tmp = [];
@@ -229,14 +253,21 @@ var hohenheimsd = function (){
 
     array.length -= count;
     return array;
-
+    */
 
   };
 
-  var pullAllBy = (array, values, iteratee=hohenheimsd.identity) => {
+  var pullAllBy = (array, values, iteratee = hohenheimsd.identity) => {
 
     var detector = hohenheimsd.iteratee(iteratee);
     var values = values.map(x => detector(x));
+    var len = array.length;
+    for (var i = len - 1; i >= 0; i--){
+      if(values.includes(detector(array[i]))) array.splice(i,1);
+    }
+    return array;
+
+    /*
     var tmp = [];
     var count = 0;
     array.forEach((item, index)=>{
@@ -253,9 +284,19 @@ var hohenheimsd = function (){
 
     array.length -= count;
     return array;
+    */
   };
 
   var pullAllWith = (array, values, comparator) => {
+
+    var detector = hohenheimsd.iteratee(iteratee);
+    var len = array.length;
+    for (var i = len - 1; i >= 0; i--){
+      if(values.some(x => comparator(x, array[i]))) array.splice(i,1);
+    }
+    return array;
+
+    /*
     var tmp = [];
     var count = 0;
     array.forEach((item, index)=>{
@@ -272,9 +313,21 @@ var hohenheimsd = function (){
 
     array.length -= count;
     return array;
+    */
   }
 
   var pullAt = (array, indexes) => {
+    //indexes去重
+    indexes = hohenheimsd.uniq(indexes).sort((x,y)=>x-y);
+    var res = [];
+    var len = indexes.length;
+    for (var i = len - 1; i >= 0; i--){
+      res.unshift(array.splice(indexes[i],1)[0]);
+    }
+    return res;
+
+
+    /*
     //indexes去重
     indexes = hohenheimsd.uniq(indexes);
     var tmp = [];
@@ -296,6 +349,7 @@ var hohenheimsd = function (){
     array.length -= count;
 
     return removes;
+    */
   };
 
   //var remove = (array, predicate = hohenheimsd.identity) => ;
@@ -318,6 +372,13 @@ var hohenheimsd = function (){
 
   var negate = value => (...value2) => !value(...value2);
 
+
+  var sum = value => sumBy(value);
+
+  var sumBy = (value, iteratee = hohenheimsd.identity) => {
+    var detector = hohenheimsd.iteratee(iteratee);
+    return value.reduce((accumulator,currentValue)=> accumulator + detector(currentValue),0);
+  };
 
   //_.identity(value)
   var identity = value => value;
@@ -432,7 +493,7 @@ var hohenheimsd = function (){
   };
 
   var isNaN = value => {
-        return typeof value === "object" && window.isNaN(value) || typeof value === "number" && window.isNaN(value);   
+    return typeof value === "object" && window.isNaN(value) || typeof value === "number" && window.isNaN(value);   
   };
   
   var isNative = value => {};
