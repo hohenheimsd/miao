@@ -57,7 +57,7 @@ var hohenheimsd = function (){
   var dropWhile = (array, predicate = hohenheimsd.identity) => {
     let detector = hohenheimsd.iteratee(predicate); 
     var array2 = Array.from(array);
-    array2.reduce((accumulator,currentValue)=> (accumulator && detector(currentValue) && array2.pop() ,accumulator && detector(currentValue) ? true : false), true);
+    array2.reduce((accumulator,currentValue)=> (accumulator && detector(currentValue) && array2.shift() ,accumulator && detector(currentValue) ? true : false), true);
     return array2;
   };
 
@@ -208,6 +208,8 @@ var hohenheimsd = function (){
       }
     });
     array.length -= count;
+
+    return array;
   };
 
   var pullAll = (array, values) => {
@@ -228,6 +230,8 @@ var hohenheimsd = function (){
     });
 
     array.length -= count;
+    return array;
+
 
   };
 
@@ -250,7 +254,7 @@ var hohenheimsd = function (){
     });
 
     array.length -= count;
-
+    return array;
   };
 
   var pullAllWith = (array, values, comparator) => {
@@ -269,6 +273,7 @@ var hohenheimsd = function (){
     });
 
     array.length -= count;
+    return array;
   }
 
 
