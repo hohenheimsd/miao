@@ -408,7 +408,7 @@ var hohenheimsd = function (){
   };
 
   var sortedLastIndexBy = (array, value, iteratee=hohenheimsd.identity) => {
-    var detector = iteratee(iteratee);
+    var detector = hohenheimsd.iteratee(iteratee);
     var len = array.length;
     for(var i = len - 1; i>=0; i--){
       if(detector(array[i]) <= etector(value)) return ++i;
