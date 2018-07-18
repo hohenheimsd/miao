@@ -488,13 +488,15 @@ var hohenheimsd = function (){
     return array;
   };
 
-  var uniqWith = (array, comparator) => {
+  var uniqWith = (value, comparator) => {
 
     var array = [];
 
     value.forEach(x => {
       array.some(y => comparator(x, y)) ? array : (array.push(x),array);
     });
+
+    return array;
 
   };
 
