@@ -407,11 +407,11 @@ var hohenheimsd = function (){
     return 0;
   };
 
-  var sortedLastIndexBy = (array, value, iteratee=hohenheimsd.identity) => {
+  var sortedLastIndexBy = (array, value, iteratee = hohenheimsd.identity) => {
     var detector = hohenheimsd.iteratee(iteratee);
     var len = array.length;
     for(var i = len - 1; i>=0; i--){
-      if(detector(array[i]) <= etector(value)) return ++i;
+      if(detector(array[i]) <= detector(value)) return ++i;
     }
     return 0;
   };
@@ -438,7 +438,22 @@ var hohenheimsd = function (){
     return -1;
   };
 
+  var sortedUniq = value => hohenheimsd.uniq(value).sort((x,y)=>x-y);
 
+  var sortedUniqBy = (value, iteratee) => hohenheimsd.uniqBy(value, iteratee).sort((x,y)=>x-y);
+
+  var tail = array => array.slice(1);
+
+  var take = (array, n = 1) => array.slice(0, n);
+
+  var takeRight = (array, n = 1) => array.slice(array.length - n);
+
+  var takeRightWhile = (array, predicate = hohenheimsd.identity) => {
+    let detector = hohenheimsd.iteratee(predicate); 
+    let res = [];
+    array.reduceRight((accumulator,currentValue)=> (accumulator && detector(currentValue) && res.unshift(currentValue) ,accumulator && detector(currentValue) ? true : false), true);
+    return res;
+  };
 
   var uniq = value => Array.from(new Set(value));
 
@@ -700,13 +715,26 @@ return {
 
     sortedLastIndexOf: sortedLastIndexOf,
 
+    sortedUniq: sortedUniq,
+
+    sortedUniqBy: sortedUniqBy,
+
+    tail: tail,
+
+    take: take,
+
+    takeRight: takeRight,
+
+    takeRightWhile: takeRightWhile,
+    
 
 
 
 
 
+    sum: sum,
 
-
+    sumBy: sumBy,
 
     identity: identity,
 
