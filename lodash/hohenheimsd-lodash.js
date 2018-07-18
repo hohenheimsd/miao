@@ -760,6 +760,12 @@ return {
 
     takeWhile: takeWhile,
 
+    union: union,
+
+    unionBy: unionBy,
+
+    unionWith: unionWith,
+
     uniq: uniq,
 
     uniqBy: uniqBy,
