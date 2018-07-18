@@ -53,12 +53,10 @@ var hohenheimsd = function (){
     return array2;
   };
 
-
+  //dropWhile不能使用dropRightWhile的方法
   var dropWhile = (array, predicate = hohenheimsd.identity) => {
     let detector = hohenheimsd.iteratee(predicate); 
-    var array2 = Array.from(array);
-    array2.reduce((accumulator,currentValue)=> (accumulator && detector(currentValue) && array2.shift() ,accumulator && detector(currentValue) ? true : false), true);
-    return array2;
+    return array.slice(array.findIndex(x => !detector(x)));
   };
 
   // _.fill(array, value, [start=0], [end=array.length]) Fills elements of array with value from start up to, but not including, end.
@@ -277,12 +275,14 @@ var hohenheimsd = function (){
   }
 
   var pullAt = (array, indexes) => {
-    //values去重
-    values = hohenheimsd.uniq(values);
+    //indexes去重
+    indexes = hohenheimsd.uniq(indexes);
     var tmp = [];
     var count = 0;
+    var removes = [];
     array.forEach((item, index)=>{
-      if(values.includes(item)){
+      if(indexes.includes(index)){
+        removes.push(item);
         tmp.push(index);
         count++;
       }else{
@@ -294,8 +294,12 @@ var hohenheimsd = function (){
     });
 
     array.length -= count;
-    return array;
+
+    return removes;
   };
+
+  var remove = (array, predicate = hohenheimsd.identity) => ;
+
 
   var uniq = value => Array.from(new Set(value));
 
@@ -529,6 +533,9 @@ return {
     pullAllBy: pullAllBy,
 
     pullAllWith: pullAllWith,
+
+    pullAt: pullAt,
+
 
 
 
