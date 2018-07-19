@@ -506,12 +506,49 @@ var hohenheimsd = function (){
 
     var detector = hohenheimsd.iteratee(iteratee);
 
-    var res =[].map(x => []);
+    var array = hohenheimsd.unzip(array);
 
-    return res;
+    array = array.map(item => item.reduce((accumulator,currentValue)=> detector(accumulator, currentValue)));
+
+    return array;
+  };
+
+  var without = (array, ...values) => array.filter(x => !values.includes(x));
+
+  var xor = (...arrays) => {
+    var res = [].concat(...arrays);
+
+    var map = res.reduce((accumulator, currentValue) => (accumulator[currentValue]++ || (accumulator[currentValue] = 1), accumulator), {});
+
+    return res.filter(item => !(map[item] != 1));
+  };
+
+  var xorBy = (...arrays) => {
+
+    var detector = hohenheimsd.iteratee(arrays.pop());
+
+    var res = [].concat(...arrays);
+
+    var map = res.reduce((accumulator, currentValue) => (accumulator[detector(currentValue)]++ || (accumulator[detector(currentValue)] = 1), accumulator), {});
+    
+    return res.filter(item => !(map[detector(item)] != 1));
+  };
+
+  var xorWith = (...arrays) => {
+    var comparator = hohenheimsd.iteratee(arrays.pop());
+    return arrays.reduce((accumulator, currentValue) => {
+      accumulator2 = accumulator.filter(item => !currentValue.some(it => comparator(item, it)));
+      currentValue2 = currentValue.filter(item => !accumulator.some(it => comparator(item, it)));
+      accumulator2 = accumulator2.concat(currentValue2);
+      return accumulator2;
+    });
   };
 
   var zip = (...arrays) => (res = Array(arrays[0].length).fill(0).map(x => []), res.forEach((item, index)=> arrays.forEach( it => item.push(it[index]))), res);
+
+  var zipObject = (props, values) => props.reduce((obj, key, index)=>(obj[key] = values[index], obj),{});
+
+  //var zipObjectDeep = (props, values) => 
 
   var keyBy = (ary , key) => ary.reduce((x,y)=>x[y.key] = y,{});
 
@@ -562,9 +599,9 @@ var hohenheimsd = function (){
 
   var after = (n, func) => (...arg) => n <= 0 ? func(...arg) : (--n,undefined);
 
-  var ary = (func ,n = func.length) => (...arg) => func((arg).length = n,...arg);
+  var ary = (func ,n = func.length) => (...arg) => func(...(arg.length = n,arg));
 
-  var unary = func => ary(func, 1);
+  var unary = func => hohenheimsd.ary(func, 1);
 
   var flip = func => (...arg) => func(...arg.reverse());
 
@@ -806,11 +843,15 @@ return {
 
     zip: zip,
 
+    without: without,
 
+    xor: xor,
 
+    xorBy: xorBy,
 
+    xorWith: xorWith,
 
-
+    zipObject: zipObject,
 
     keyBy: keyBy,
 
