@@ -1,5 +1,5 @@
 var hohenheimsd = function (){
-
+  var res;
   //_.chunk(array, [size=1])  
   //Creates an array of elements split into groups the length of size. If array can't be split evenly, the final chunk will be the remaining elements.
   var chunk = (array, size = 1) => {
@@ -51,7 +51,7 @@ var hohenheimsd = function (){
   var dropRightWhile = (array, predicate = hohenheimsd.identity) => {
     let detector = hohenheimsd.iteratee(predicate); 
     var array2 = Array.from(array);
-    array2.reduceRight((accumulator,currentValue)=> (accumulator && detector(currentValue) && array2.pop() ,accumulator && detector(currentValue) ? true : false), true);
+    array2.reduceRight((accumulator,currentValue)=> (accumulator && detector(currentValue) && array2.pop() ,accumulator && detector(currentValue)), true);
     return array2;
   };
 
@@ -205,7 +205,7 @@ var hohenheimsd = function (){
 
 
     /*
-    //从前往后删的方法 有点蠢
+    //从前往后删的方法
     //values去重
     values = hohenheimsd.uniq(values);
     var tmp = [];
@@ -453,7 +453,7 @@ var hohenheimsd = function (){
   var takeRightWhile = (array, predicate = hohenheimsd.identity) => {
     let detector = hohenheimsd.iteratee(predicate); 
     let res = [];
-    array.reduceRight((accumulator,currentValue)=> (accumulator && detector(currentValue) && res.unshift(currentValue) ,accumulator && detector(currentValue) ? true : false), true);
+    array.reduceRight((accumulator,currentValue)=> (accumulator && detector(currentValue) && res.unshift(currentValue) ,accumulator && detector(currentValue)), true);
     return res;
   };
 
@@ -502,11 +502,23 @@ var hohenheimsd = function (){
 
   var unzip = array =>  (res = Array(array[0].length).fill(0).map(x => []), res.forEach((item, index)=> array.forEach( it => item.push(it[index]))), res);
 
+  var unzipWith = (array, iteratee = hohenheimsd.identity) => {
+
+    var detector = hohenheimsd.iteratee(iteratee);
+
+    var res =[].map(x => []);
+
+    return res;
+  };
+
   var zip = (...arrays) => (res = Array(arrays[0].length).fill(0).map(x => []), res.forEach((item, index)=> arrays.forEach( it => item.push(it[index]))), res);
 
+  var keyBy = (ary , key) => ary.reduce((x,y)=>x[y.key] = y,{});
 
-  var negate = value => (...value2) => !value(...value2);
-
+  var groupBy = (collection, iteratee=hohenheimsd.identity) => {
+    var detector = hohenheimsd.iteratee(iteratee);
+    return collection.reduce((result,item)=> (result[detector(item)] ? result[detector(item)].push(item): result[detector(item)] = [item], result) ,{});
+  };
 
   var sum = value => sumBy(value);
 
@@ -515,6 +527,7 @@ var hohenheimsd = function (){
     return value.reduce((accumulator,currentValue)=> accumulator + detector(currentValue),0);
   };
 
+  var bind = (f, ...fixedArgs) => (...arg) => f(...fixedArgs,...arg);
   //_.identity(value)
   var identity = value => value;
 
@@ -544,9 +557,23 @@ var hohenheimsd = function (){
       return false;
     }
 
+
   };
 
-  
+  var after = (n, func) => (...arg) => n <= 0 ? func(...arg) : (--n,undefined);
+
+  var ary = (func ,n = func.length) => (...arg) => func((arg).length = n,...arg);
+
+  var unary = func => ary(func, 1);
+
+  var flip = func => (...arg) => func(...arg.reverse());
+
+  var negate = value => (...value2) => !value(...value2);
+
+  var spread = func => (arg) => func.apply(null, arg);
+
+
+
   var isArguments =  value => Object.prototype.toString.call(value) === '[object Arguments]';
 
   var isArray =  value => Object.prototype.toString.call(value) === '[object Array]';
@@ -664,6 +691,7 @@ var hohenheimsd = function (){
   var isWeakSet = value => Object.prototype.toString.call(value) === '[object WeakSet]';
 
 return {
+
     chunk: chunk,
     
     compact: compact,
@@ -774,9 +802,19 @@ return {
 
     unzip: unzip,
 
+    unzipWith: unzipWith,
+
     zip: zip,
 
 
+
+
+
+
+
+    keyBy: keyBy,
+
+    groupBy: groupBy,
 
     sum: sum,
 
@@ -786,11 +824,21 @@ return {
 
     iteratee: iteratee,
 
+    reduce: reduce,
 
+    filter: filter,
 
+    after: after,
 
+    ary: ary,
 
+    unary: unary,
 
+    flip: flip,
+
+    spread: spread,
+
+    negate: negate,
 
 
     isArguments: isArguments,
@@ -859,7 +907,6 @@ return {
 
     isWeakSet: isWeakSet,
 
-    negate: negate,
 
 }
 
