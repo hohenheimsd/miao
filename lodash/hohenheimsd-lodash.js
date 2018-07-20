@@ -18,13 +18,11 @@ var hohenheimsd = function (){
   //_.concat(array, [values])  Creates a new array concatenating array with any additional arrays and/or values.
   var concat = (array,...nums) => array.concat(...nums);
 
-
   // difference(array, [values]) this method returns a new array.
   var difference = (array, ...values) =>{
     var valArr = [].concat(...values);
     return array.filter(x => !valArr.includes(x));
   };
-
 
   //_.differenceBy(array, [values], [iteratee=_.identity]) 
   var differenceBy = (array, values, iteratee = hohenheimsd.identity) =>{
@@ -139,13 +137,8 @@ var hohenheimsd = function (){
      */
   }; 
 
-
-  var reduce = (ary, reducer, initialValue) => (ary.forEach((currentValue, index, array) => initialValue = reducer(initialValue, currentValue, index, array)),initialValue);
-    
-  var filter = (ary, test) => ary.reduce((accumulator,currentValue)=> test(currentValue) ? (accumulator.push(currentValue),accumulator) : accumulator , []);
-
   //_.indexOf(array, value, [fromIndex=0])
-  var indexOf = (array, value, index = 0) => index < 0 ?  array.indexOf(value, array.length + index - 1) : array.indexOf(value,index) ;
+  var indexOf = (array, value, index = 0) => index < 0 ?  array.indexOf(value, array.length + index - 1) : array.indexOf(value,index);
 
   //_.initial(array) Gets all but the last element of array.
   var initial = value => value.slice(0,value.length - 1);
@@ -181,7 +174,6 @@ var hohenheimsd = function (){
 
   }
 
-
   var join = (array, separator = ',') => array.join(separator);
 
   var last = array => array[array.length - 1];
@@ -189,8 +181,6 @@ var hohenheimsd = function (){
   var lastIndexOf = (array, value, fromIndex=array.length-1) => array.lastIndexOf(value, fromIndex);
 
   var nth = (array, n = 0) => n < 0 ? array[array.length+n] : array[n];
-
-
 
   //this method mutates array 不用filter 原地修改
   var pull = (array, ...values) => {
@@ -550,7 +540,10 @@ var hohenheimsd = function (){
 
   //var zipObjectDeep = (props, values) => 
 
-  var keyBy = (ary , key) => ary.reduce((x,y)=>x[y.key] = y,{});
+  var keyBy = (ary , key) => {
+    key = hohenheimsd.iteratee(key);
+    return ary.reduce((x,y)=> (x[key(y)] = y, x),{});
+  };
 
   var groupBy = (collection, iteratee=hohenheimsd.identity) => {
     var detector = hohenheimsd.iteratee(iteratee);
@@ -608,6 +601,18 @@ var hohenheimsd = function (){
   var negate = value => (...value2) => !value(...value2);
 
   var spread = func => (arg) => func.apply(null, arg);
+
+
+
+
+  var reduce = (ary, reducer, initialValue) => (ary.forEach((currentValue, index, array) => initialValue = reducer(initialValue, currentValue, index, array)),initialValue);
+    
+  var filter = (ary, test) =>  {
+    var test = hohenheimsd.iteratee(test);
+    return ary.reduce((accumulator,currentValue)=> test(currentValue) ? (accumulator.push(currentValue),accumulator) : accumulator, []);
+  };
+
+
 
 
 
