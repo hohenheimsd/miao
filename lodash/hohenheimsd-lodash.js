@@ -565,6 +565,8 @@ var hohenheimsd = function (){
     for (let [index, val] of collection){
       if(eacher(val, index, collection) === false) break;
     }
+    return collection;
+
   };
 
   var forEachRight = (collection, iteratee = hohenheimsd.identity) => {
@@ -574,6 +576,7 @@ var hohenheimsd = function (){
     for (var i = len - 1; i >= 0; i--){
       if(eacher(collection[i][1], collection[i][0], collection) === false) break;
     }
+    return collection;
   };
 
   var every = (collection, predicate = hohenheimsd.identity) => {
@@ -613,7 +616,7 @@ var hohenheimsd = function (){
   var flatMapDepth = (collection, iteratee = hohenheimsd.identity, depth = 1) =>{
     collection = hohenheimsd.flatMap(collection, iteratee);
 
-    return hohenheimsd.flattenDepth(collection, depth);
+    return hohenheimsd.flattenDepth(collection, depth - 1);
   };
 
   var reduce = function (collection, reducer = hohenheimsd.identity , accumulator){
