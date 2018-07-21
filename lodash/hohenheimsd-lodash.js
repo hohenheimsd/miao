@@ -540,6 +540,127 @@ var hohenheimsd = function (){
 
   //var zipObjectDeep = (props, values) => 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+  var countBy =  (collection, iteratee = hohenheimsd.identity) => {
+    var detector = hohenheimsd.iteratee(iteratee);
+    collection = Object.entries(collection);
+    return collection.reduce((accumulator, currentValue)=> (++accumulator[detector(currentValue[1])] || (accumulator[detector(currentValue[1])] = 1), accumulator) ,{});
+  };
+
+  var forEach = (collection, iteratee = hohenheimsd.identity) => {
+    var eacher = hohenheimsd.iteratee(iteratee);
+    collection = Object.entries(collection);
+    for (let [index, val] of collection){
+      if(eacher(val, index, collection) === false) break;
+    }
+  };
+
+  var forEachRight = (collection, iteratee = hohenheimsd.identity) => {
+    var eacher = hohenheimsd.iteratee(iteratee);
+    collection = Object.entries(collection);
+    var len = collection.length;
+    for (var i = len - 1; i >= 0; i--){
+      if(eacher(collection[i][1], collection[i][0], collection) === false) break;
+    }
+  };
+
+  var every = (collection, predicate = hohenheimsd.identity) => {
+    var detector = hohenheimsd.iteratee(predicate);
+    collection = Object.entries(collection);
+    return !collection.some(item => !detector(item[1]));s
+  };
+
+  var find = (collection, predicate = hohenheimsd.identity, fromIndex = 0) => {
+    var detector = hohenheimsd.iteratee(predicate);
+    var result;
+    hohenheimsd.forEach(collection.slice(fromIndex), item => detector(item) ? ((result = item), false) : true);
+    return result;    
+  };
+
+  var findLast = (collection, predicate = hohenheimsd.identity, fromIndex = collection.length - 1) => {
+    var detector = hohenheimsd.iteratee(predicate);
+    var result;
+    hohenheimsd.forEachRight(collection.slice(0, fromIndex + 1), item => detector(item) ? ((result = item), false) : true);
+    return result;    
+  };
+
+  var flatMap = (collection, iteratee = hohenheimsd.identity) => {
+
+    var detector = hohenheimsd.iteratee(iteratee);
+    
+    return Array.from(collection).reduce((accumulator,currentValue) => accumulator.concat(detector(currentValue)) ,[]);    
+    
+  }
+
+  var flatMapDeep = (collection, iteratee = hohenheimsd.identity) => {
+    collection = hohenheimsd.flatMap(collection, iteratee);
+
+    return hohenheimsd.flattenDeep(collection);
+  };
+
+  var flatMapDepth = (collection, iteratee = hohenheimsd.identity, depth = 1) =>{
+    collection = hohenheimsd.flatMap(collection, iteratee);
+
+    return hohenheimsd.flattenDepth(collection, depth);
+  };
+
+  var reduce = function (collection, reducer = hohenheimsd.identity , accumulator){
+    reducer = hohenheimsd.iteratee(reducer);
+    collection = Object.entries(collection);
+    for (let i in collection){ 
+      if(i == 0 && (arguments.length < 3)){
+        accumulator = collection[0][1];
+        continue;
+      }
+      accumulator = reducer(accumulator,collection[i][1],collection[i][0],collection);
+    }
+    return accumulator;
+  };
+
+  var includes = (collection, value, fromIndex = 0) => {
+    if(hohenheimsd.isObjectLike(collection)) collection = Object.values(collection);
+
+    return collection.includes(value, fromIndex);
+
+  };
+
+  var invokeMap = (collection, path, ...args) => {
+    var fnc = hohenheimsd.isString(path) ? collection[0][path] : path;
+
+    return Object.values(collection).map(item => fnc.apply(item, args));
+  };
+
+  var map = (collection, iteratee = hohenheimsd.identity) => {
+    var detector = hohenheimsd.iteratee(iteratee);
+
+    return Object.values(collection).map((item, index, array) => detector(item, index, array));
+  };
+
+
+  //var orderBy = (collection, iteratees = hohenheimsd.identity, orders) => {};
+
+
+
+  //var reduce = (ary, reducer, initialValue) => initialValue !== undefined ? (ary.forEach((currentValue, index, array) => initialValue = reducer(initialValue, currentValue, index, array)),initialValue) : 1 ; 
+  var filter = (ary, test) =>  {
+    var test = hohenheimsd.iteratee(test);
+
+    return ary.reduce((accumulator,currentValue)=> test(currentValue) ? (accumulator.push(currentValue),accumulator) : accumulator, []);
+  };
+
+
   var keyBy = (ary , key) => {
     key = hohenheimsd.iteratee(key);
     return ary.reduce((x,y)=> (x[key(y)] = y, x),{});
@@ -549,6 +670,21 @@ var hohenheimsd = function (){
     var detector = hohenheimsd.iteratee(iteratee);
     return collection.reduce((result,item)=> (result[detector(item)] ? result[detector(item)].push(item): result[detector(item)] = [item], result) ,{});
   };
+
+
+
+  var after = (n, func) => (...arg) => n <= 0 ? func(...arg) : (--n,undefined);
+
+  var ary = (func ,n = func.length) => (...arg) => func(...(arg.length = n,arg));
+
+  var unary = func => hohenheimsd.ary(func, 1);
+
+  var flip = func => (...arg) => func(...arg.reverse());
+
+  var negate = value => (...value2) => !value(...value2);
+
+  var spread = func => (arg) => func.apply(null, arg);
+
 
   var sum = value => sumBy(value);
 
@@ -589,33 +725,6 @@ var hohenheimsd = function (){
 
 
   };
-
-  var after = (n, func) => (...arg) => n <= 0 ? func(...arg) : (--n,undefined);
-
-  var ary = (func ,n = func.length) => (...arg) => func(...(arg.length = n,arg));
-
-  var unary = func => hohenheimsd.ary(func, 1);
-
-  var flip = func => (...arg) => func(...arg.reverse());
-
-  var negate = value => (...value2) => !value(...value2);
-
-  var spread = func => (arg) => func.apply(null, arg);
-
-
-
-
-  var reduce = (ary, reducer, initialValue) => (ary.forEach((currentValue, index, array) => initialValue = reducer(initialValue, currentValue, index, array)),initialValue);
-    
-  var filter = (ary, test) =>  {
-    var test = hohenheimsd.iteratee(test);
-    return ary.reduce((accumulator,currentValue)=> test(currentValue) ? (accumulator.push(currentValue),accumulator) : accumulator, []);
-  };
-
-
-
-
-
   var isArguments =  value => Object.prototype.toString.call(value) === '[object Arguments]';
 
   var isArray =  value => Object.prototype.toString.call(value) === '[object Array]';
@@ -858,9 +967,40 @@ return {
 
     zipObject: zipObject,
 
+
+    countBy: countBy,
+
     keyBy: keyBy,
 
     groupBy: groupBy,
+
+    forEach: forEach,
+
+    forEachRight: forEachRight,
+
+    every: every,
+
+    reduce: reduce,
+
+    filter: filter,
+
+    find: find,
+
+    findLast: findLast,
+
+    flatMap: flatMap,
+
+    flatMapDeep: flatMapDeep,
+
+    flatMapDepth: flatMapDepth,
+
+    includes: includes,
+
+    invokeMap: invokeMap,
+
+    map: map,
+
+
 
     sum: sum,
 
@@ -870,9 +1010,7 @@ return {
 
     iteratee: iteratee,
 
-    reduce: reduce,
 
-    filter: filter,
 
     after: after,
 
@@ -885,6 +1023,8 @@ return {
     spread: spread,
 
     negate: negate,
+
+
 
 
     isArguments: isArguments,
