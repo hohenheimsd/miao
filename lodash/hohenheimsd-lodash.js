@@ -13,7 +13,7 @@ var hohenheimsd = function (){
   }
 
   //_.compact(array)  Creates an array with all falsey values removed. The values false, null, 0, "", undefined, and NaN are falsey.
-  var compact = array => array.filter(array=>array);
+  var compact = array => array.filter(array => array);
 
   //_.concat(array, [values])  Creates a new array concatenating array with any additional arrays and/or values.
   var concat = (array,...nums) => array.concat(...nums);
@@ -561,9 +561,9 @@ var hohenheimsd = function (){
 
   var forEach = (collection, iteratee = hohenheimsd.identity) => {
     var eacher = hohenheimsd.iteratee(iteratee);
-    collection = Object.entries(collection);
-    for (let [index, val] of collection){
-      if(eacher(val, index, collection) === false) break;
+    array = Object.entries(collection);
+    for (let [index, val] of array){
+      if(eacher(val, index, array) === false) break;
     }
     return collection;
 
@@ -571,10 +571,10 @@ var hohenheimsd = function (){
 
   var forEachRight = (collection, iteratee = hohenheimsd.identity) => {
     var eacher = hohenheimsd.iteratee(iteratee);
-    collection = Object.entries(collection);
-    var len = collection.length;
+    array = Object.entries(collection);
+    var len = array.length;
     for (var i = len - 1; i >= 0; i--){
-      if(eacher(collection[i][1], collection[i][0], collection) === false) break;
+      if(eacher(array[i][1], array[i][0], array) === false) break;
     }
     return collection;
   };
@@ -582,7 +582,7 @@ var hohenheimsd = function (){
   var every = (collection, predicate = hohenheimsd.identity) => {
     var detector = hohenheimsd.iteratee(predicate);
     collection = Object.entries(collection);
-    return !collection.some(item => !detector(item[1]));s
+    return !collection.some(item => !detector(item[1]));
   };
 
   var find = (collection, predicate = hohenheimsd.identity, fromIndex = 0) => {
@@ -669,10 +669,78 @@ var hohenheimsd = function (){
     return ary.reduce((x,y)=> (x[key(y)] = y, x),{});
   };
 
-  var groupBy = (collection, iteratee=hohenheimsd.identity) => {
+  var groupBy = (collection, iteratee = hohenheimsd.identity) => {
     var detector = hohenheimsd.iteratee(iteratee);
     return collection.reduce((result,item)=> (result[detector(item)] ? result[detector(item)].push(item): result[detector(item)] = [item], result) ,{});
   };
+
+  var partition = (collection, predicate = headohenheimsd.identity) => {
+    var detector = hohenheimsd.iteratee(predicate);
+    var falseGroup = [];
+    var res = [];
+    res.push(collection.filter(item => detector(item) || (falseGroup.push(item), false)));
+    res.push(falseGroup);
+    return res;
+  };
+
+  var reduceRight = function (collection, reducer = hohenheimsd.identity , accumulator){
+    reducer = hohenheimsd.iteratee(reducer);
+    collection = Object.entries(collection);
+    var len = collection.length;
+    for (let i = len - 1; i >=0 ; i--){ 
+      if(i == len - 1 && (arguments.length < 3)){
+        accumulator = collection[len - 1][1];
+        continue;
+      }
+      accumulator = reducer(accumulator,collection[i][1],collection[i][0],collection);
+    }
+    return accumulator;
+  };
+
+  var reject = (collection, predicate = hohenheimsd.identity) => {
+    var detector = hohenheimsd.iteratee(predicate);
+
+    return collection.reduce((accumulator,currentValue)=> test(currentValue) ? accumulator : (accumulator.push(currentValue),accumulator) , []);
+  };
+
+  var sample = collection => {
+    var values = Object.values(collection);
+    return values[Math.random()*(values.length - 1) | 0]; 
+  }
+
+  var sampleSize = (collection, n = 1) => {
+    var values = Object.values(collection);
+
+    if(n > values.length) n = values.length;
+
+    return new Array(n).fill(0).map(() => values.splice(Math.random() * values.length, 1).pop());
+  };
+
+  var shuffle = collection => hohenheimsd.sampleSize(collection, Infinity); 
+
+  var size = collection => hohenheimsd.isObjectLike(collection) ? Object.values(collection).length : collection.length;
+
+  var some = (collection, predicate = hohenheimsd.identity) => {
+
+    var detector = hohenheimsd.iteratee(predicate);
+
+    collection = Object.values(collection);
+
+    return collection.some(item => detector(item[1])); 
+  };
+
+  var  sortBy = (collection, iteratees = hohenheimsd.identity) =>  {
+    let predicates = iteratees.map(it => hohenheimsd.iteratee(it)).reverse();
+    let values = Object.values(collection);
+    predicates.forEach(predicate => {
+      values.sort((a, b) => {
+        if (predicate(a) < predicate(b)) return -1;
+        else if (predicate(a) > predicate(b)) return 1;
+        else return 0;
+      })
+    })
+    return values;
+  }
 
 
 
@@ -1003,7 +1071,23 @@ return {
 
     map: map,
 
+    partition: partition,
 
+    reduceRight: reduceRight,
+
+    reject: reject,
+
+    sample: sample,
+
+    sampleSize: sampleSize,
+
+    shuffle: shuffle,
+
+    size: size,
+
+    some: some,
+
+    sortBy: sortBy,
 
     sum: sum,
 
