@@ -26,10 +26,10 @@ var hohenheimsd = function (){
 
   //_.differenceBy(array, [values], [iteratee=_.identity]) 
   var differenceBy = (array, ...values) => { 
-    if (hohenheimsd.isString(values[values.length - 1]) || hohenheimsd.isFunction(values[values.length - 1])) {
-      let detector = hohenheimsd.iteratee(values.pop());     
+    if(hohenheimsd.isString(values[values.length - 1]) || hohenheimsd.isFunction(values[values.length - 1])) {
+      var detector = hohenheimsd.iteratee(values.pop());     
     }else {
-      let detector = hohenheimsd.identity;
+      var detector = hohenheimsd.identity;
     }
     
     values = [].concat(...values).map(x => detector(x));
@@ -881,8 +881,13 @@ var hohenheimsd = function (){
 
   var isMap = value => Object.prototype.toString.call(value) === "[object Map]";
 
-  var isMatch = (object,source) => hohenheimsd.isEqual(object[Object.keys(source)[0]],Object.values(source)[0]);
-  //var isMatch = (object,source) => hohenheimsd.isEqual(object, source);
+  var isMatch = (object,source) => {
+    for(var key in source){
+      if(!hohenheimsd.isEqual(object[key],source[key])) return false;
+    }
+    return true;
+  };
+  
 
 
   var isMatchWith = (object, source, customiser) => {
