@@ -777,6 +777,13 @@ var hohenheimsd = function (){
   };
   var bind = (f, thisArg, ...fixedArgs) => (...arg) => f.call(thisArg,...fixedArgs,...arg);
 
+  var defer =  (func, ...args) => setTimeout(func, 0, ...args);
+
+  var delay = (func, wait, ...args) => setTimeout(func, wait, ...args);
+
+
+
+
   //_.identity(value)
   var identity = value => value;
 
@@ -808,6 +815,43 @@ var hohenheimsd = function (){
 
 
   };
+
+
+
+
+
+  var castArray = value => hohenheimsd.isArray(value) ? value : [value];
+
+  var cloneDeep = value => JSON.parse((JSON.stringify(value)));
+
+  var conformsTo = (object, source) => hohenheimsd.iteratee(Object.keys(source)[1])(object[Object.keys(source)[0]]);
+
+  var eq = (value, other) => (value !== value && other !== other) || value === other;
+
+  var gt = (value, other) => value > other;
+
+  var gte = (value, other) => value >= other;
+
+  var lt = (value, other) => value < other;
+
+  var lte = (value, other) => value <= other;
+
+  var toArray = value => hohenheimsd.isNil(value) ? [] : Object.values(value);
+
+  var toFinite = value => Number(value) > Number.MAX_VALUE ? Number.MAX_VALUE : Number(value) < Number.MIN_VALUE ? Number.MIN_VALUE : Number(value);
+
+  var toInteger = value => Number(value) > Number.MAX_VALUE ? Number.MAX_VALUE : Number(value) | 0;
+
+  var toLength = value => Number(value) > Number.MAX_VALUE ? 2**32-1 : Number(value) | 0;
+
+  var toNumber = value => Number(value);
+
+  var toSafeInteger = value => Number(value) > Number.MAX_SAFE_INTEGER ? Number.MAX_SAFE_INTEGER : Number(value) < Number.MIN_SAFE_INTEGER ? Number.MIN_SAFE_INTEGER : Number(value) | 0;
+
+  var toString = value => hohenheimsd.isNil(value) ? '' : value.toString();
+                   
+
+
   var isArguments =  value => Object.prototype.toString.call(value) === '[object Arguments]';
 
   var isArray =  value => Object.prototype.toString.call(value) === '[object Array]';
@@ -1131,6 +1175,39 @@ return {
 
     bind: bind,
 
+    defer: defer,
+
+    delay: delay,
+
+    castArray: castArray,
+
+    cloneDeep: cloneDeep,
+
+    conformsTo: conformsTo,
+
+    eq: eq,
+
+    gt: gt,
+
+    gte: gte,
+
+    lt: lt,
+
+    lte: lte,
+
+    toArray: toArray,
+
+    toFinite: toFinite,
+
+    toInteger: toInteger,
+
+    toLength: toLength,
+
+    toNumber: toNumber,
+
+    toSafeInteger: toSafeInteger,
+
+    toString: toString,
 
 
 
