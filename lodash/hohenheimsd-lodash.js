@@ -25,11 +25,14 @@ var hohenheimsd = function (){
   };
 
   //_.differenceBy(array, [values], [iteratee=_.identity]) 
-  var differenceBy = (array, values, iteratee = hohenheimsd.identity) =>{
-
-    let detector = hohenheimsd.iteratee(iteratee);     
-
-    values = values.map(x => detector(x));
+  var differenceBy = (array, ...values) => { 
+    if(hohenheimsd.isString(values[values.length - 1]) ||  hohenheimsd.isFunction(values[values.length - 1])){
+      let detector = hohenheimsd.iteratee(values.pop());     
+    }else {
+      let detector = hohenheimsd.identity;
+    }
+    
+    values = [].concat(...values).map(x => detector(x));
     
     return array.filter(x => !values.includes(detector(x)));
   };
@@ -579,11 +582,7 @@ var hohenheimsd = function (){
     return collection;
   };
 
-  var every = (collection, predicate = hohenheimsd.identity) => {
-    var detector = hohenheimsd.iteratee(predicate);
-    collection = Object.entries(collection);
-    return !collection.some(item => !detector(item[1]));
-  };
+
 
   var find = (collection, predicate = hohenheimsd.identity, fromIndex = 0) => {
     var detector = hohenheimsd.iteratee(predicate);
@@ -700,7 +699,7 @@ var hohenheimsd = function (){
   var reject = (collection, predicate = hohenheimsd.identity) => {
     var detector = hohenheimsd.iteratee(predicate);
 
-    return collection.reduce((accumulator,currentValue)=> test(currentValue) ? accumulator : (accumulator.push(currentValue),accumulator) , []);
+    return collection.reduce((accumulator,currentValue)=> detector(currentValue) ? accumulator : (accumulator.push(currentValue),accumulator) , []);
   };
 
   var sample = collection => {
@@ -720,13 +719,21 @@ var hohenheimsd = function (){
 
   var size = collection => hohenheimsd.isObjectLike(collection) ? Object.values(collection).length : collection.length;
 
+  var every = (collection, predicate = hohenheimsd.identity) => {
+    var detector = hohenheimsd.iteratee(predicate);
+
+    collection = Object.values(collection);
+
+    return !collection.some(item => !detector(item));
+  };
+
   var some = (collection, predicate = hohenheimsd.identity) => {
 
     var detector = hohenheimsd.iteratee(predicate);
 
     collection = Object.values(collection);
 
-    return collection.some(item => detector(item[1])); 
+    return collection.some(item => detector(item)); 
   };
 
   var  sortBy = (collection, iteratees = hohenheimsd.identity) =>  {
@@ -747,6 +754,10 @@ var hohenheimsd = function (){
   var after = (n, func) => (...arg) => n <= 0 ? func(...arg) : (--n,undefined);
 
   var ary = (func ,n = func.length) => (...arg) => func(...(arg.length = n,arg));
+
+  var before = (n, func) => (...arg) => n <= 0 ? (--n,undefined) : func(...arg);
+
+  var bind = (func, thisArg, partials)
 
   var unary = func => hohenheimsd.ary(func, 1);
 
