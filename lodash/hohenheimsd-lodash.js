@@ -757,7 +757,7 @@ var hohenheimsd = function (){
 
   var before = (n, func) => (...arg) => n <= 0 ? (--n,undefined) : func(...arg);
 
-  var bind = (func, thisArg, partials)
+  //var bind = (func, thisArg, partials);
 
   var unary = func => hohenheimsd.ary(func, 1);
 
