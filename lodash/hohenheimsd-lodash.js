@@ -757,7 +757,6 @@ var hohenheimsd = function (){
 
   var before = (n, func) => (...arg) => n <= 0 ? (--n,undefined) : func(...arg);
 
-  //var bind = (func, thisArg, partials);
 
   var unary = func => hohenheimsd.ary(func, 1);
 
@@ -774,8 +773,8 @@ var hohenheimsd = function (){
     var detector = hohenheimsd.iteratee(iteratee);
     return value.reduce((accumulator,currentValue)=> accumulator + detector(currentValue),0);
   };
+  var bind = (f, thisArg, ...fixedArgs) => (...arg) => f.call(thisArg,...fixedArgs,...arg);
 
-  var bind = (f, ...fixedArgs) => (...arg) => f(...fixedArgs,...arg);
   //_.identity(value)
   var identity = value => value;
 
@@ -880,7 +879,9 @@ var hohenheimsd = function (){
 
   var isMap = value => Object.prototype.toString.call(value) === "[object Map]";
 
-  var isMatch = (object,source) => hohenheimsd.isEqual(object[Object.keys(source)[0]],Object.values(source)[0]);
+  //var isMatch = (object,source) => hohenheimsd.isEqual(object[Object.keys(source)[0]],Object.values(source)[0]);
+  var isMatch = (object,source) => hohenheimsd.isEqual(object, source);
+
 
   var isMatchWith = (object, source, customiser) => {
     let [prop, val] = Object.entries(source)[0];
@@ -924,6 +925,8 @@ var hohenheimsd = function (){
   var isWeakSet = value => Object.prototype.toString.call(value) === '[object WeakSet]';
 
 return {
+
+    //Array
 
     chunk: chunk,
     
@@ -1049,6 +1052,7 @@ return {
 
     zipObject: zipObject,
 
+    //collection
 
     countBy: countBy,
 
@@ -1100,15 +1104,11 @@ return {
 
     sortBy: sortBy,
 
+    //function
+
     sum: sum,
 
     sumBy: sumBy,
-
-    identity: identity,
-
-    iteratee: iteratee,
-
-
 
     after: after,
 
@@ -1122,7 +1122,16 @@ return {
 
     negate: negate,
 
+    bind: bind,
 
+
+
+
+
+
+    identity: identity,
+
+    iteratee: iteratee,
 
 
     isArguments: isArguments,
