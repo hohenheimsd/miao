@@ -2,6 +2,14 @@ var hohenheimsd = function (){
   var res;
   //_.chunk(array, [size=1])  
   //Creates an array of elements split into groups the length of size. If array can't be split evenly, the final chunk will be the remaining elements.
+  //
+
+  // Array
+  // 
+  // 
+  // 
+  // 
+  // 
   var chunk = (array, size = 1) => {
     var arr = [];
     var i = 0;
@@ -543,7 +551,14 @@ var hohenheimsd = function (){
 
   //var zipObjectDeep = (props, values) => 
 
-
+  //Function
+  //
+  //
+  //
+  //
+  //
+  //
+  //
 
   var countBy =  (collection, iteratee = hohenheimsd.identity) => {
     var detector = hohenheimsd.iteratee(iteratee);
@@ -752,12 +767,6 @@ var hohenheimsd = function (){
 
   var spread = func => (arg) => func.apply(null, arg);
 
-  var sum = value => sumBy(value);
-
-  var sumBy = (value, iteratee = hohenheimsd.identity) => {
-    var detector = hohenheimsd.iteratee(iteratee);
-    return value.reduce((accumulator,currentValue)=> accumulator + detector(currentValue),0);
-  };
   var bind = (f, thisArg, ...fixedArgs) => (...arg) => f.call(thisArg,...fixedArgs,...arg);
 
   var defer =  (func, ...args) => setTimeout(func, 0, ...args);
@@ -765,47 +774,17 @@ var hohenheimsd = function (){
   var delay = (func, wait, ...args) => setTimeout(func, wait, ...args);
 
 
-
-
-  //_.identity(value)
-  var identity = value => value;
-
-  var iteratee = func => {
-    if(isString(func)){       //如果是字符串就判断对象的属性
-      return function (obj){
-        return obj[func];
-      }
-    }
-
-    if(isObjectLike(func)){
-      if(isArray(func)){      //如果是数组就转变为对象去判断
-        return function (obj){
-          return isMatch(obj, fromPairs([func])); 
-        }
-      }
-      return function(obj) {    //如果是对象就直接用isMatch对比判断
-        return isMatch(obj,func);
-      }
-    }
-
-    if(isFunction(func)){     //如果是函数 直接返回
-      return func;
-    }
-
-    return function () {
-      return false;
-    }
-  };
-
-
-
-
+  //Lang
+  //
+  //
+  //
+  //
 
   var castArray = value => hohenheimsd.isArray(value) ? value : hohenheimsd.isUndefined(value) ? [] : [value];
 
   var cloneDeep = value => JSON.parse((JSON.stringify(value)));
 
-  var conformsTo = (object, source) => hohenheimsd.iteratee(Object.entries(source)[1])(object[Object.entries(source)[0]]);
+  var conformsTo = (object, source) => hohenheimsd.iteratee(Object.values(source)[0])(object[Object.keys(source)[0]]); 
 
   var eq = (value, other) => (value !== value && other !== other) || value === other;
 
@@ -953,6 +932,83 @@ var hohenheimsd = function (){
   var isWeakMap = value => Object.prototype.toString.call(value) === '[object WeakMap]';
 
   var isWeakSet = value => Object.prototype.toString.call(value) === '[object WeakSet]';
+
+
+  //Math
+  //
+  //
+  //
+
+  var add = (augend, addend) => augend + addend;
+
+  var ceil = (number, precision = 0) => Math.ceil(number * (10 ** precision)) / (10 ** precision);
+
+  var divide = (dividend, divisor) => dividend / divisor;
+
+  var floor = (number, precision = 0) => Math.floor(number * (10 ** precision)) / (10 ** precision);
+
+  var max = array => array && array.length ? Math.max(...array) : undefined;
+
+  var maxBy = (array, iteratee = hohenheimsd.identity) => {
+    return hohenheimsd.sortBy(array, [iteratee]).pop();    
+  };
+
+  var mean = array => array.reduce((mean, item, index) => (index * mean + item) / (index + 1));
+
+  var meanBy = (array, iteratee = hohenheimsd.identity) => {
+    var detector = hohenheimsd.iteratee(iteratee);
+    return array.reduce((mean, item, index) => (index * mean + detector(item)) / (index + 1));
+  };
+
+  var min = array => array && array.length ? Math.min(...array) : undefined;
+
+  var minBy = (array, iteratee = hohenheimsd.identity) => {
+    return hohenheimsd.sortBy(array, [iteratee]).shift();    
+  };
+
+  var multiply = (multiplier, multiplicand) => multiplier * multiplicand;
+
+  var round = (number, precision = 0) => Math.round(number * (10 ** precision)) / (10 ** precision);
+
+  var subtract = (minuend, subtrahend) => minuend - subtrahend;
+
+  var sum = value => sumBy(value);
+
+  var sumBy = (value, iteratee = hohenheimsd.identity) => {
+    var detector = hohenheimsd.iteratee(iteratee);
+    return value.reduce((accumulator,currentValue)=> accumulator + detector(currentValue),0);
+  };
+
+  //_.identity(value)
+  var identity = value => value;
+
+  var iteratee = func => {
+    if(isString(func)){       //如果是字符串就判断对象的属性
+      return function (obj){
+        return obj[func];
+      }
+    }
+
+    if(isObjectLike(func)){
+      if(isArray(func)){      //如果是数组就转变为对象去判断
+        return function (obj){
+          return isMatch(obj, fromPairs([func])); 
+        }
+      }
+      return function(obj) {    //如果是对象就直接用isMatch对比判断
+        return isMatch(obj,func);
+      }
+    }
+
+    if(isFunction(func)){     //如果是函数 直接返回
+      return func;
+    }
+
+    return function () {
+      return false;
+    }
+  };
+
 
 return {
 
@@ -1136,10 +1192,6 @@ return {
 
     //function
 
-    sum: sum,
-
-    sumBy: sumBy,
-
     after: after,
 
     ary: ary,
@@ -1188,8 +1240,38 @@ return {
 
     toString: toString,
 
+    //Math
+    
+    max: max,
 
+    maxBy: maxBy,
 
+    add: add,
+
+    ceil: ceil,
+
+    divide: divide,
+
+    floor: floor,
+
+    mean: mean,
+
+    meanBy: meanBy,
+
+    min: min,
+
+    minBy: minBy,
+
+    multiply: multiply,
+
+    round: round,
+
+    subtract: subtract,
+
+    sum: sum,
+
+    sumBy: sumBy,
+    
 
 
     identity: identity,
