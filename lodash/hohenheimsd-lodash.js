@@ -545,17 +545,6 @@ var hohenheimsd = function (){
 
 
 
-
-
-
-
-
-
-
-
-
-
-
   var countBy =  (collection, iteratee = hohenheimsd.identity) => {
     var detector = hohenheimsd.iteratee(iteratee);
     collection = Object.entries(collection);
@@ -724,7 +713,7 @@ var hohenheimsd = function (){
 
     collection = Object.values(collection);
 
-    return !collection.some(item => !detector(item));
+    return !collection.some(hohenheimsd.negate(detector));
   };
 
   var some = (collection, predicate = hohenheimsd.identity) => {
@@ -733,10 +722,10 @@ var hohenheimsd = function (){
 
     collection = Object.values(collection);
 
-    return collection.some(item => detector(item)); 
+    return collection.some(detector); 
   };
 
-  var  sortBy = (collection, iteratees = hohenheimsd.identity) =>  {
+  var sortBy = (collection, iteratees = hohenheimsd.identity) =>  {
     let predicates = iteratees.map(it => hohenheimsd.iteratee(it)).reverse();
     let values = Object.values(collection);
     predicates.forEach(predicate => {
@@ -749,16 +738,11 @@ var hohenheimsd = function (){
     return values;
   }
 
-
-
   var after = (n, func) => (...arg) => n <= 0 ? func(...arg) : (--n,undefined);
 
   var ary = (func ,n = func.length) => (...arg) => func(...(arg.length = n,arg));
 
   var before = (n, func) => (...arg) => n <= 0 ? (--n,undefined) : func(...arg);
-
-
-
 
   var unary = func => hohenheimsd.ary(func, 1);
 
@@ -767,7 +751,6 @@ var hohenheimsd = function (){
   var negate = value => (...value2) => !value(...value2);
 
   var spread = func => (arg) => func.apply(null, arg);
-
 
   var sum = value => sumBy(value);
 
@@ -812,19 +795,17 @@ var hohenheimsd = function (){
     return function () {
       return false;
     }
-
-
   };
 
 
 
 
 
-  var castArray = value => hohenheimsd.isArray(value) ? value : [value];
+  var castArray = value => hohenheimsd.isArray(value) ? value : hohenheimsd.isUndefined(value) ? [] : [value];
 
   var cloneDeep = value => JSON.parse((JSON.stringify(value)));
 
-  var conformsTo = (object, source) => hohenheimsd.iteratee(Object.keys(source)[1])(object[Object.keys(source)[0]]);
+  var conformsTo = (object, source) => hohenheimsd.iteratee(Object.entries(source)[1])(object[Object.entries(source)[0]]);
 
   var eq = (value, other) => (value !== value && other !== other) || value === other;
 
@@ -848,9 +829,7 @@ var hohenheimsd = function (){
 
   var toSafeInteger = value => Number(value) > Number.MAX_SAFE_INTEGER ? Number.MAX_SAFE_INTEGER : Number(value) < Number.MIN_SAFE_INTEGER ? Number.MIN_SAFE_INTEGER : Number(value) | 0;
 
-  var toString = value => hohenheimsd.isNil(value) ? '' : value.toString();
-                   
-
+  var toString = value => hohenheimsd.isNil(value) ? '' : value.toString();            
 
   var isArguments =  value => Object.prototype.toString.call(value) === '[object Arguments]';
 
