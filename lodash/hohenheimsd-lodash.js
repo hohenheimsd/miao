@@ -1037,8 +1037,6 @@ var hohenheimsd = function (){
 
   var at = (object, ...paths) =>  hohenheimsd.flatten([].concat(...paths)).map(path => hohenheimsd.toPath(path)).map(pathItem => hohenheimsd.get(object, pathItem));
 
-
-
   var get = (object, path, defaultValue) => {
     var pathArr = hohenheimsd.toPath(path);
 
@@ -1046,7 +1044,7 @@ var hohenheimsd = function (){
 
     try {
 
-      value = path.reduce((accumulator, currentValue) => accumulator[currentValue] ,object);
+      value = pathArr.reduce((accumulator, currentValue) => accumulator[currentValue] ,object);
 
     } catch (e) {
 
