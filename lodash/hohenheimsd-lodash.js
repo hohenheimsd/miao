@@ -957,7 +957,7 @@ var hohenheimsd = function (){
 
   var meanBy = (array, iteratee = hohenheimsd.identity) => {
     var detector = hohenheimsd.iteratee(iteratee);
-    return array.reduce((mean, item, index) => (index * mean + detector(item)) / (index + 1));
+    return array.reduce((mean, item, index) => (index * mean + detector(item)) / (index + 1), detector(array[0]));
   };
 
   var min = array => array && array.length ? Math.min(...array) : undefined;
@@ -978,6 +978,86 @@ var hohenheimsd = function (){
     var detector = hohenheimsd.iteratee(iteratee);
     return value.reduce((accumulator,currentValue)=> accumulator + detector(currentValue),0);
   };
+
+
+  //Number
+  //
+  //
+  
+
+  //比最大的大的话返回最大 比最小的小返回最小 在中间 返回自己
+  var clamp = (number, lower, upper) => number > upper ? upper : number < lower ? lower : number;
+
+  var inRange = function (number, start, end) {
+    if(arguments.length === 2){
+      end = start;
+      start = 0;
+    }
+    if(end < start){
+      [end, start] = [start, end];
+    }
+
+    return number < end && number >= start;
+  };
+
+  var random = function (lower=0, upper=1, floating){
+    if (upper === 1 && lower !== 0) {
+      upper = lower;
+      lower = 0;
+    }
+    if (!floating) {
+      return Math.random() * (upper - lower) + lower;
+    } else {
+      lower = Math.ceil(lower);
+      upper = Math.floor(upper);
+      return Math.floor(Math.random() * (upper - lower) + lower);
+    }
+  };  
+
+  //Object 
+  //
+  //
+  //
+  //
+  
+  var assign = (object, ...sources) => sources.reduce((accumulator, currentValue) => (hohenheimsd.forEach(currentValue, (value, key) => accumulator[key] = value), accumulator) ,object);
+
+  var defaults = (object, ...sources) => sources.reduce((accumulator, currentValue) => (hohenheimsd.forEach(currentValue, (value, key) => key in accumulator || (accumulator[key] = value)), accumulator) ,object);
+
+  var assignIn = (object, ...sources) => sources.reduce((accumulator, currentValue) => {
+
+    for(var key in currentValue){
+
+      accumulator[key] = currentValue[key];
+
+    }
+    return accumulator;
+
+  } ,object);
+
+  var at = (object, ...paths) =>  hohenheimsd.flatten([].concat(...paths)).map(path => hohenheimsd.toPath(path)).map(pathItem => hohenheimsd.get(object, pathItem));
+
+
+
+  var get = (object, path, defaultValue) => {
+    var pathArr = hohenheimsd.toPath(path);
+
+    var value;
+
+    try {
+
+      value = path.reduce((accumulator, currentValue) => accumulator[currentValue] ,object);
+
+    } catch (e) {
+
+      return defaultValue;
+
+    }
+    return hohenheimsd.isUndefined(value) ? defaultValue : value;
+  };
+
+
+  var toPath = value => hohenheimsd.isArray(value) ? value : value.match(/([\w$]+)/g);
 
   //_.identity(value)
   var identity = value => value;
@@ -1271,7 +1351,27 @@ return {
     sum: sum,
 
     sumBy: sumBy,
-    
+
+    //Number
+    random: random,
+
+    clamp: clamp,
+
+    inRange: inRange,
+
+    //Object
+    assign: assign,
+
+    assignIn: assignIn,
+
+    defaults: defaults,
+
+    at: at,
+
+    get: get,
+
+    toPath: toPath,
+
 
 
     identity: identity,
