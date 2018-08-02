@@ -765,7 +765,7 @@ var hohenheimsd = function (){
 
   var negate = value => (...value2) => !value(...value2);
 
-  var spread = func => (arg) => func.apply(null, arg);
+  var spread = func => arg => func.apply(null, arg);
 
   var bind = (f, thisArg, ...fixedArgs) => (...arg) => f.call(thisArg,...fixedArgs,...arg);
 
@@ -1022,8 +1022,6 @@ var hohenheimsd = function (){
   
   var assign = (object, ...sources) => sources.reduce((accumulator, currentValue) => (hohenheimsd.forEach(currentValue, (value, key) => accumulator[key] = value), accumulator) ,object);
 
-  var defaults = (object, ...sources) => sources.reduce((accumulator, currentValue) => (hohenheimsd.forEach(currentValue, (value, key) => key in accumulator || (accumulator[key] = value)), accumulator) ,object);
-
   var assignIn = (object, ...sources) => sources.reduce((accumulator, currentValue) => {
 
     for(var key in currentValue){
@@ -1035,7 +1033,217 @@ var hohenheimsd = function (){
 
   } ,object);
 
-  var at = (object, ...paths) =>  hohenheimsd.flatten([].concat(...paths)).map(path => hohenheimsd.toPath(path)).map(pathItem => hohenheimsd.get(object, pathItem));
+  var defaults = (object, ...sources) => sources.reduce((accumulator, currentValue) => (hohenheimsd.forEach(currentValue, (value, key) => key in accumulator || (accumulator[key] = value)), accumulator) ,object);
+
+  var defaultsDeep = (object, ...sources) => sources.reduce((accumulator, currentValue) => (hohenheimsd.forEach(currentValue, (value, key) => {key in accumulator ? hohenheimsd.isObject(value) && hohenheimsd.isObject(accumulator[key]) && (accumulator[key] = hohenheimsd.defaultsDeep(accumulator[key], value)) : accumulator[key] = value}), accumulator) ,object);
+
+  var toPairs = object => object.entries();
+
+  var toPairsIn = object => {
+    var res = [];
+    for(var x in object){
+      res.push([x, object[x]]);
+    }
+    return res;
+  };
+
+  var findKey = (object, predicate = hohenheimsd.identity) => {
+    var detector = hohenheimsd.iteratee(predicate);
+    var res = undefined;
+    hohenheimsd.forEach(object, (value, key)=> detector(value) ? (res = key, false) : true);
+    return res;
+  }
+
+  var findLastKey = (object, predicate = hohenheimsd.identity) => {
+    var detector = hohenheimsd.iteratee(predicate);
+    var res = undefined;
+    hohenheimsd.forEachRight(object, (value, key)=> detector(value) ? (res = key, false) : true);
+    return res;
+  }
+
+  var forIn = (object, iteratee = hohenheimsd.identity) => {
+    var detector = hohenheimsd.iteratee(iteratee);
+    for(var key in object){
+      if(detector(object[key], key, object) === false) break;
+    }
+  };
+
+  var forInRight = (object, iteratee = hohenheimsd.identity) => {
+    var detector = hohenheimsd.iteratee(iteratee);
+    var keys = [];
+    for(var key in object){
+      keys.push(key);
+    }
+    var keys = keys.reverse();
+    for(var key2 in keys){
+      if(detector(object[key], key2, object) === false) break;
+    }
+  };
+
+  var forOwn = (object, iteratee = hohenheimsd.identity) => {
+    var detector = hohenheimsd.iteratee(iteratee);
+    var keys = object.keys();
+    for(var key in keys){
+      if(detector(object[key], key, object) === false) break;
+    }
+  };
+
+  var forOwnRight = (object, iteratee = hohenheimsd.identity) => {
+
+    var detector = hohenheimsd.iteratee(iteratee);
+    var keys = object.keys().reverse();
+    for(var key in keys){
+      if(detector(object[key], key, object) === false) break;
+    }
+
+  };
+
+  var functions = object => hohenheimsd.reduce(object, (res, value, key) => hohenheimsd.isFunction(value) ? (res.push(key), res) : res, []);
+
+  var functionsIn = object => {
+    var keys = [];
+    for(var key in object){
+      keys.push(key);
+    }
+
+    return keys.reduce((res, key) => hohenheimsd.isFunction(object[key]) ? (res.push(key), res) : res ,[]);
+  };
+
+  var has = (object, path) => {
+    var pathArr = hohenheimsd.toPath(path);
+    var value = object;
+    var flag = true;
+    hohenheimsd.forEach(pathArr, path => value.hasOwnProperty(path) ? (value = value[path], true) : (flag = false, false));
+    return flag;
+  };
+
+  var hasIn = (object, path) => {
+    var pathArr = hohenheimsd.toPath(path);
+    var value = object;
+    var flag = true;
+    hohenheimsd.forEach(pathArr, path => path in value ? (value = value[path], true) : (flag = false, false));
+    return flag;
+  }
+
+  var invert = object => hohenheimsd.reduce(object, (object, value, key) => (object[value] = key, object), {});
+
+  var invertBy = (object, iteratee = hohenheimsd.identity) => {
+    var detector = hohenheimsd.iteratee(iteratee);
+    return hohenheimsd.reduce(object, (object, value, key) => (object[detector(value)] ? (object[detector(value)].push(key)) : (object[detector(value)] = [key]), object), {});
+  };
+
+  var invoke = (object, path, ...args) => {
+    var pathArr = hohenheimsd.toPath(path);
+    var func = pathArr.pop();
+    return hohenheimsd.get(object, pathArr)[func](...args);
+  };
+
+  var keys = object => Object.keys(object);
+
+  var keysIn = object => {
+
+    var res = [];
+    for (var key in object){
+      res.push(key);
+    }
+    return res;
+
+  }
+
+  var mapKeys = (object, iteratee = hohenheimsd.identity) => {
+
+    var detector = hohenheimsd.iteratee(iteratee);
+    return hohenheimsd.reduce(object, (res, value, key, object)=>(res[detector(value, key, object)] = value, res), {});
+
+  }
+
+  var mapValues = (object, iteratee = hohenheimsd.identity) => {
+
+    var detector = hohenheimsd.iteratee(iteratee);
+    return hohenheimsd.reduce(object, (res, value, key, object)=>( res[key] = detector(value, key, object), res), {});
+
+  }
+
+
+  var merge = (object, ...sources) => hohenheimsd.mergeWith(object, ...sources);
+
+  var mergeWith = (object, ...sources) => {
+    var customiser = sources.pop();
+    if(!hohenheimsd.isFunction(customiser)){
+      sources.push(customiser);
+      customiser = undefined;
+    }
+    var mergeWith2 = (object, ...sources) => {
+      return sources.reduce((accumulator, currentValue) => (hohenheimsd.forEach(currentValue, (value, key) => {
+        var val = object[key];
+        if(customiser && customiser(val, value, key, object, currentValue)) {
+          object[key] = customiser(val, value, key, object, currentValue);
+          return;
+        }
+        if(hohenheimsd.isObject(val) && hohenheimsd.isObject(value)) {
+          return mergeWith2(val, value);
+        }
+        object[key] = value;
+      }), object), object);
+    }
+
+    return mergeWith2(object, ...sources);
+  };
+
+  var omit = (object, paths) => {
+    var res = hohenheimsd.assign({}, object); 
+
+    paths.forEach(path => {
+      path = hohenheimsd.toPath(path);
+      var property = path.pop(); 
+      var obj = hohenheimsd.get(res, path);
+      delete obj[property];
+    })
+    return res;
+
+  };
+
+  var omitBy = (object, predicate = hohenheimsd.identity) =>{
+    var detector = hohenheimsd.iteratee(predicate);
+    return hohenheimsd.reduce(object, (obj, value, key) => detector(value, key) ? obj : (obj[key] = value, obj), {});
+  };
+
+  var pick = (object, paths) => {
+    var res = {};
+
+    paths.forEach(path => {
+      path = hohenheimsd.toPath(path);
+      var property = path.pop();
+      var obj = hohenheimsd.get(object, path);
+      if(property in obj) {
+        res[property] = obj[property];
+      }
+    })
+    return res;
+  };
+
+  var pickBy = (object, predicate = hohenheimsd.identity) => {
+    var detector = hohenheimsd.iteratee(predicate);
+    return hohenheimsd.reduce(object, (obj, value, key) => detector(value, key) ? (obj[key] = value, obj) : obj, {});
+  };
+
+
+  var result = (object, path, defaultValue) => {
+
+    var path = hohenheimsd.toPath(path);
+    var result = hohenheimsd.get(object, path, defaultValue);
+    var objectToBind = hohenheimsd.get(object, hohenheimsd.dropRight(path));
+
+    return hohenheimsd.isFunction(result) ? result.call(objectToBind) : result;
+  };
+
+  var at = (object, ...paths) => hohenheimsd.flatten([].concat(...paths)).map(path => hohenheimsd.toPath(path)).map(pathItem => hohenheimsd.get(object, pathItem));
+
+  //var set = (object, path, value) => ;
+
+  // var setWith = (object, path, value, customizer) => {
+
+  // };
 
   var get = (object, path, defaultValue) => {
     var pathArr = hohenheimsd.toPath(path);
@@ -1364,6 +1572,62 @@ return {
 
     defaults: defaults,
 
+    defaultsDeep: defaultsDeep,
+
+    toPairs: toPairs,
+
+    toPairsIn: toPairsIn,
+
+    findKey: findKey,
+
+    findLastKey: findLastKey,
+
+    forIn: forIn,
+
+    forInRight: forInRight,
+
+    forOwn: forInRight,
+
+    forOwnRight: forOwnRight,
+
+    functions: functions,
+
+    functionsIn: functionsIn,
+
+    has: has,
+
+    hasIn: hasIn,
+
+    invert: invert,
+
+    invertBy: invertBy,
+
+    invoke: invoke,
+
+    keys: keys,
+
+    keysIn: keysIn,
+
+    mapKeys: mapKeys,
+
+    mapValues: mapValues,
+
+    merge: merge,
+
+    mergeWith: mergeWith,
+
+    omit: omit,
+
+    omitBy: omitBy,
+
+    pick: pick,
+
+    pickBy: pickBy,
+
+    result: result,
+
+
+
     at: at,
 
     get: get,
@@ -1442,7 +1706,6 @@ return {
     isWeakMap: isWeakMap,
 
     isWeakSet: isWeakSet,
-
 
 }
 
