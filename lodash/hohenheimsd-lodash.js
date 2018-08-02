@@ -1037,7 +1037,7 @@ var hohenheimsd = function (){
 
   var defaultsDeep = (object, ...sources) => sources.reduce((accumulator, currentValue) => (hohenheimsd.forEach(currentValue, (value, key) => {key in accumulator ? hohenheimsd.isObject(value) && hohenheimsd.isObject(accumulator[key]) && (accumulator[key] = hohenheimsd.defaultsDeep(accumulator[key], value)) : accumulator[key] = value}), accumulator) ,object);
 
-  var toPairs = object => object.entries();
+  var toPairs = object => Object.entries(object);
 
   var toPairsIn = object => {
     var res = [];
@@ -1066,6 +1066,7 @@ var hohenheimsd = function (){
     for(var key in object){
       if(detector(object[key], key, object) === false) break;
     }
+    return object;
   };
 
   var forInRight = (object, iteratee = hohenheimsd.identity) => {
@@ -1078,6 +1079,7 @@ var hohenheimsd = function (){
     for(var key2 in keys){
       if(detector(object[key], key2, object) === false) break;
     }
+    return object;
   };
 
   var forOwn = (object, iteratee = hohenheimsd.identity) => {
@@ -1086,15 +1088,18 @@ var hohenheimsd = function (){
     for(var key in keys){
       if(detector(object[key], key, object) === false) break;
     }
+    return object;
   };
 
   var forOwnRight = (object, iteratee = hohenheimsd.identity) => {
 
     var detector = hohenheimsd.iteratee(iteratee);
-    var keys = object.keys().reverse();
+    var keys = Object.keys(object).reverse();
     for(var key in keys){
       if(detector(object[key], key, object) === false) break;
     }
+
+    return object;
 
   };
 
@@ -1239,11 +1244,26 @@ var hohenheimsd = function (){
 
   var at = (object, ...paths) => hohenheimsd.flatten([].concat(...paths)).map(path => hohenheimsd.toPath(path)).map(pathItem => hohenheimsd.get(object, pathItem));
 
-  //var set = (object, path, value) => ;
+  var set = (object, path, value) => hohenheimsd.setWith(object, path, value);
 
-  // var setWith = (object, path, value, customizer) => {
-
-  // };
+  var setWith = (object, path, value, customiser) => {
+    customiser = hohenheimsd.isFunction(customiser) ? customiser : undefined;
+    var pathArr = hohenheimsd.toPath(path);
+    pathArr.reduce((obj, path, index)=> {
+      if(index < pathArr.length - 1){
+        if(customiser){
+          obj[path] = customiser(obj[path], path, obj);
+        }else {
+          obj[path] = hohenheimsd.isObject(obj[path]) ? obj[path] : isNaN(pathArr(index + 1)) ? {} : [];
+        } 
+      }else {
+        obj[path] = value;
+      }
+      return obj[path];
+    } 
+    ,object)
+    return object;
+  };
 
   var get = (object, path, defaultValue) => {
     var pathArr = hohenheimsd.toPath(path);
@@ -1626,7 +1646,9 @@ return {
 
     result: result,
 
+    set: set,
 
+    setWith: setWith,
 
     at: at,
 
