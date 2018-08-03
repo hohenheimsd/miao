@@ -99,7 +99,8 @@ var hohenheimsd = function (){
 
   //_.flatten(array) Flattens array a single level deep.
   //var flatten = value => value.reduce((accumulator,currentValue) => accumulator.concat(currentValue),[]);
-  var flatten = value => [].concat(...value);
+  ///var flatten = value => [].concat(...value);
+  var flatten = [].concat.apply.bind([].concat, []);
 
   //_.flattenDeep(array) Recursively flattens array.
   var flattenDeep = value => {
@@ -1084,7 +1085,7 @@ var hohenheimsd = function (){
 
   var forOwn = (object, iteratee = hohenheimsd.identity) => {
     var detector = hohenheimsd.iteratee(iteratee);
-    var keys = object.keys();
+    var keys = Object.keys(object);
     for(var key in keys){
       if(detector(object[key], key, object) === false) break;
     }
@@ -1254,7 +1255,7 @@ var hohenheimsd = function (){
         if(customiser){
           obj[path] = customiser(obj[path], path, obj);
         }else {
-          obj[path] = hohenheimsd.isObject(obj[path]) ? obj[path] : isNaN(pathArr(index + 1)) ? {} : [];
+          obj[path] = hohenheimsd.isObject(obj[path]) ? obj[path] : isNaN(pathArr[index + 1]) ? {} : [];
         } 
       }else {
         obj[path] = value;
@@ -1263,6 +1264,20 @@ var hohenheimsd = function (){
     } 
     ,object)
     return object;
+  };
+
+
+  var transform = function (object, iteratee = hohenheimsd.identity, accumulator)  {
+    var detector = hohenheimsd.iteratee(iteratee);
+    collection = Object.entries(object);
+    for (let i in collection){ 
+      if(i == 0 && (arguments.length < 3)){
+        accumulator = collection[0][1];
+        continue;
+      }
+      if (detector(accumulator,collection[i][1],collection[i][0],object) === false ) break;
+    }
+    return accumulator;
   };
 
   var get = (object, path, defaultValue) => {
@@ -1282,6 +1297,7 @@ var hohenheimsd = function (){
     return hohenheimsd.isUndefined(value) ? defaultValue : value;
   };
 
+  
 
   var toPath = value => hohenheimsd.isArray(value) ? value : value.match(/([\w$]+)/g);
 
@@ -1649,6 +1665,8 @@ return {
     set: set,
 
     setWith: setWith,
+
+    transform: transform,
 
     at: at,
 
