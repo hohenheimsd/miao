@@ -1280,6 +1280,35 @@ var hohenheimsd = function (){
     return accumulator;
   };
 
+  var unset = (object, path) => {
+
+    var path = hohenheimsd.toPath(path);
+    var key = path.pop();
+    object = hohenheimsd.get(object, path);
+    if(key in object){
+      delete object[key];
+      return true;
+    }else {
+      return false;
+    }
+
+  };
+
+
+  var update = (object, path, updater) => hohenheimsd.setWith(object, path, updater(hohenheimsd.get(object, path)));
+
+  var updateWith = (object, path, updater, customiser) => hohenheimsd.setWith(object, path, updater(hohenheimsd.get(object, path)), customiser);
+
+  var values = object => Object.values(object);
+
+  var valuesIn = object => {
+    var res = [];
+    for(var i in object){
+      res.push(object[i]);
+    }
+    return res;
+  };
+
   var get = (object, path, defaultValue) => {
     var pathArr = hohenheimsd.toPath(path);
 
@@ -1331,6 +1360,246 @@ var hohenheimsd = function (){
     }
   };
 
+
+  //String
+  //
+  //
+
+  var camelCase = (string = '') => {
+    var words = hohenheimsd.words(string);
+    return words.length === 1 ? words[0].toLowerCase() : (words.reduce( (accumulator, currentValue)=> accumulator + hohenheimsd.capitalize(currentValue),words.shift().toLowerCase()));
+  };
+
+  var capitalize = (string = '') => string[0].toUpperCase() + string.slice(1).toLowerCase();
+
+  var words = (string = '', pattern) => hohenheimsd.isRegExp(pattern) ? string.match(pattern) : string.match(/[A-Z][a-z]+|[A-Z]+(?=[A-Z][a-z])|[a-z]+|[A-Z]+|\d+/g);
+
+
+  //var deburr = () =>;
+   
+  var endsWith = (string='', target, position = string.length) => string[position - 1] === target;
+   
+  var escape = (string='') =>{
+    var map = {
+      '&+': '&amp;',
+      '<+': '&lt;',
+      '>+': '&gt;', 
+      '"+': '&quot;',
+      "'+": '&#39;',  // IE不支持&apos;
+    };
+    for(var i in map){
+      string = string.replace(RegExp(i,'g'), map[i]);
+    }
+    return string;
+  };
+   
+  function talkToChenJunQiao (...anywords) {  
+    return '不是';
+  }
+
+  var escapeRegExp = (string='') => {
+    var characters =  ["^", "$", "", ".", "*", "+", "?", "(", ")", "[", "]", "{", "}", "|"];
+    for(var i of characters){
+      string = string.replace(RegExp(`\\${i}+`,'g'),'\\' + i);
+    }
+    return string;
+  };
+
+  var kebabCase = (string='') => hohenheimsd.words(string).map(it=>it.toLowerCase()).join('-');
+
+  var lowerCase = (string='') => hohenheimsd.words(string).map(it=>it.toLowerCase());  
+   
+  var lowerFirst = (string='') => string[0].toLowerCase() + string.slice(1);
+  
+  var pad = (string='', length=0, chars = ' ') => {
+    if(length > string.length){
+      var len = length - string.length;
+      var left = '';
+      var right = '';
+
+      var leftLen = len / 2 | 0;
+      var rightLen = len - leftLen;
+      for(var i = 0; i < leftLen; i++){
+        left += chars[i % chars.length];
+      }
+      for(var i = 0; i < rightLen; i++){
+        right += chars[i % chars.length];
+      }
+    
+      string = left + string + right;
+
+    }
+    return string;
+  };  
+  
+  var padEnd = (string='', length=0, chars = ' ') =>{
+    if(length > string.length){
+      var len = length - string.length;
+      var right = '';
+
+      for(var i = 0; i < len; i++){
+        right += chars[i % chars.length];
+      }
+      
+      string = string + right;
+    }
+    return string;
+  };
+   
+  var padStart = (string='', length=0, chars = ' ') =>{
+    if(length > string.length){
+      var len = length - string.length;
+      var left = '';
+
+      for(var i = 0; i < len; i++){
+        left += chars[i % chars.length];
+      }
+      
+      string = left + string;
+    }
+    return string;
+  };
+   
+  var parseInt = (string, radix=10) => {
+
+    var sum = 0,
+    digits = '0123456789ABCDEF';
+    var negative = false;
+    if(string[0] === '-'){
+      string = string.slice(1);
+      negative = true;
+    }
+
+    string = string.replace(/^0+/,'');
+
+    for(var i = string.length - 1,j = 0; i >= 0; i--,j++){
+      sum += digits.indexOf(string[i]) * radix ** j; 
+    }
+
+    if (negative) return sum*(-1);
+    return sum;
+
+  };
+
+  var repeat = (string='', n=1) => Array(n).fill(0).map(it => string).join('');
+
+  function separateGroup (match){
+        var group = [];
+        for(var i = 1; i < match.length; i++){
+          group.push(match[i]);
+        }
+        return group;
+  }
+
+  var replace = (string='', pattern, replacement) =>{
+    if(hohenheimsd.isString(pattern)){
+      var index = string.indexOf(pattern);
+      if (hohenheimsd.isFunction(replacement)) {
+        replacement = replacement(pattern, index, string);      
+      }
+      if(index !== -1){
+        var left = string.slice(0, index);
+        var right = string.slice(index + pattern.length);
+        string =  left + replacement + right;
+      }
+      return string;
+
+    }else if (hohenheimsd.isRegExp(pattern)) {
+      var match = pattern.exec(string);
+      var groupArr;
+      if(!match) return string;
+
+      groupArr = separateGroup(match);   //某次匹配的分组的数组
+      var res;
+      var leftString = string.slice(0, pattern.lastIndex)
+      var rightString = string.slice(pattern.lastIndex);
+      if(hohenheimsd.isString(replacement)){
+        leftString = hohenheimsd.replace(leftString , match[0], groupArr.reduce((accumulator, currentValue, index)=> hohenheimsd.replace(accumulator, `$${index + 1}`, currentValue) ,replacement));
+      }else {
+        leftString = string.slice(0,match.index) + replacement(match[0] ,...groupArr, match.index, string);
+      }
+      
+      if(pattern.global){
+        pattern.lastIndex = 0;
+        return leftString + hohenheimsd.replace(rightString, pattern, replacement);
+      } else {
+        return leftString + rightString;
+      }
+
+    }
+  };
+
+  var snakeCase = (string='') => hohenheimsd.words(string).map(it=>it.toLowerCase()).join('_');
+
+  var split  = (string='', separator, limit) => string.split(separator, limit);
+
+  var startCase = (string ='') => hohenheimsd.words(string).map(it=>it[0].toUpperCase() + it.slice(1)).join(' ');
+
+  var startsWith = (string='', target, position=0) => string.slice(position, position + target.length) === target;
+
+  var toLower = (string='') => string.toLowerCase();
+
+  var toUpper = (string='') => string.toUpperCase();
+
+  var trim = (string='', chars=' ') => string.replace(RegExp(`^[${chars}]+|[${chars}]+$` ,'gi'),'');
+
+  var trimEnd = (string='', chars=' ') => string.replace(RegExp(`[${chars}]+$` ,'gi'),'');
+
+  var trimStart = (string='', chars=' ') => string.replace(RegExp(`^[${chars}]+` ,'gi'),'');
+
+  var truncate = (string='',options={length:30, omission:'...'}) => {
+    if(options.length === undefined){
+      options.length = 30;
+    }
+    if(options.omission === undefined){
+      options.omission = '...';
+    }
+    var len = string.length;
+    if(string.search(options.separator) >= 0 && options.separator){
+      if(len > options.length){
+        if(hohenheimsd.isString(options.separator)){
+          var index = string.lastIndexOf(options.separator);
+          if(index + options.omission.length > options.length){
+            return string.slice(0,options.length).replace(RegExp(`[^]{${options.omission.length}}$`), options.omission);
+          }else {
+            return string.slice(0, index) + options.omission;
+          }
+        }else {
+          var match;
+          options.separator = RegExp(options.separator, /g/.test(options.separator.flags) ? options.separator.flags : options.separator.flags + 'g' );
+          var index;
+          while(match = options.separator.exec(string)){
+            index = match.index;
+          }
+          if(index + options.omission.length > options.length){
+            return string.slice(0,options.length).replace(RegExp(`[^]{${options.omission.length}}$`), options.omission);
+          }else {
+            return string.slice(0, index) + options.omission;
+          }
+        }
+      }else {
+        return string;
+      }
+    }else {
+      if(len > options.length){
+        return string.slice(0,options.length).replace(RegExp(`[^]{${options.omission.length}}$`), options.omission);
+      }else {
+        return string;
+      }
+    }
+  };
+  /*  
+  
+  
+   
+   
+   
+  var unescape = () =>;
+   
+  var upperCase = () =>;
+   
+  var upperFirst = () =>;
+  */
 
 return {
 
@@ -1668,18 +1937,25 @@ return {
 
     transform: transform,
 
+    unset: unset,
+
+    update: update,
+
+    updateWith: updateWith,
+
+    values: values,
+
+    valuesIn: valuesIn,
+
     at: at,
 
     get: get,
 
     toPath: toPath,
 
-
-
     identity: identity,
 
     iteratee: iteratee,
-
 
     isArguments: isArguments,
 
@@ -1747,6 +2023,68 @@ return {
 
     isWeakSet: isWeakSet,
 
+    //String
+    words: words,
+
+    capitalize: capitalize,
+
+    camelCase: camelCase,
+
+    //deburr: deburr,
+     
+    endsWith: endsWith,
+     
+    escape: escape,
+     
+    escapeRegExp: escapeRegExp,
+
+     
+    kebabCase: kebabCase,
+     
+    lowerCase: lowerCase,
+     
+    lowerFirst: lowerFirst,
+     
+    pad: pad,
+     
+    padEnd: padEnd,
+     
+    padStart: padStart,
+     
+    parseInt: parseInt,
+     
+    repeat: repeat,
+
+    replace: replace,
+     
+    snakeCase: snakeCase,
+     
+    split: split,
+     
+    startCase: startCase,
+     
+    startsWith: startsWith,
+          
+    toLower: toLower,
+     
+    toUpper: toUpper,
+     
+    trim: trim,
+     
+    trimEnd: trimEnd,
+     
+    trimStart: trimStart,
+     
+    truncate: truncate,
+   /*
+     
+     
+    unescape: unescape,
+     
+    upperCase: upperCase,
+     
+    upperFirst: upperFirst,
+    */
 }
 
 
