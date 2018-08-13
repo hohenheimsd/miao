@@ -1255,7 +1255,7 @@ var hohenheimsd = function (){
         if(customiser){
           obj[path] = customiser(obj[path], path, obj);
         }else {
-          obj[path] = hohenheimsd.isObject(obj[path]) ? obj[path] : isNaN(pathArr[index + 1]) ? {} : [];
+          obj[path] = hohenheimsd.isObject(obj[path]) ? obj[path] : window.isNaN(pathArr[index + 1]) ? {} : [];
         } 
       }else {
         obj[path] = value;
@@ -1407,11 +1407,11 @@ var hohenheimsd = function (){
 
   var kebabCase = (string='') => hohenheimsd.words(string).map(it=>it.toLowerCase()).join('-');
 
-  var lowerCase = (string='') => hohenheimsd.words(string).map(it=>it.toLowerCase());  
+  var lowerCase = (string='') => hohenheimsd.words(string).map(it=>it.toLowerCase()).join(' ');  
    
   var lowerFirst = (string='') => string[0].toLowerCase() + string.slice(1);
   
-  var pad = (string='', length=0, chars = ' ') => {
+  var pad = (string='', length=0, chars = ' ') => { 
     if(length > string.length){
       var len = length - string.length;
       var left = '';
@@ -1527,6 +1527,7 @@ var hohenheimsd = function (){
       }
 
     }
+    return string;
   };
 
   var snakeCase = (string='') => hohenheimsd.words(string).map(it=>it.toLowerCase()).join('_');
@@ -1541,11 +1542,11 @@ var hohenheimsd = function (){
 
   var toUpper = (string='') => string.toUpperCase();
 
-  var trim = (string='', chars=' ') => string.replace(RegExp(`^[${chars}]+|[${chars}]+$` ,'gi'),'');
+  var trim = (string='', chars='\\s') => string.replace(RegExp(`^[${chars}]+|[${chars}]+$` ,'gi'),'');
 
-  var trimEnd = (string='', chars=' ') => string.replace(RegExp(`[${chars}]+$` ,'gi'),'');
+  var trimEnd = (string='', chars='\\s') => string.replace(RegExp(`[${chars}]+$` ,'gi'),'');
 
-  var trimStart = (string='', chars=' ') => string.replace(RegExp(`^[${chars}]+` ,'gi'),'');
+  var trimStart = (string='', chars='\\s') => string.replace(RegExp(`^[${chars}]+` ,'gi'),'');
 
   var truncate = (string='',options={length:30, omission:'...'}) => {
     if(options.length === undefined){
