@@ -98,26 +98,11 @@ var hohenheimsd = function (){
   var head = value => value[0];
 
   //_.flatten(array) Flattens array a single level deep.
-  //var flatten = value => value.reduce((accumulator,currentValue) => accumulator.concat(currentValue),[]);
   ///var flatten = value => [].concat(...value);
   var flatten = [].concat.apply.bind([].concat, []);
 
   //_.flattenDeep(array) Recursively flattens array.
-  var flattenDeep = value => {
-    var array = [];
-    var flattenDeep2 = value =>{
-      for(var i of value){
-        if(isArray(i)){
-          flattenDeep2(i);
-        }else {
-          array.push(i);
-        }
-      }
-    }
-    flattenDeep2(value);
-
-    return array;
-  };
+  var flattenDeep = value => value.reduce((accumulator, currentValue)=> (Array.isArray(currentValue) ? (accumulator.push(...flattenDeep(currentValue)),accumulator) : accumulator.push(currentValue), accumulator),[]);
 
   //_.flattenDepth(array, [depth=1]) Recursively flatten array up to depth times.
   var flattenDepth = (array, depth=1) => {
@@ -574,7 +559,6 @@ var hohenheimsd = function (){
       if(eacher(val, index, array) === false) break;
     }
     return collection;
-
   };
 
   var forEachRight = (collection, iteratee = hohenheimsd.identity) => {
@@ -655,10 +639,7 @@ var hohenheimsd = function (){
     return Object.values(collection).map((item, index, array) => detector(item, index, array));
   };
 
-
   //var orderBy = (collection, iteratees = hohenheimsd.identity, orders) => {};
-
-
 
   //var reduce = (ary, reducer, initialValue) => initialValue !== undefined ? (ary.forEach((currentValue, index, array) => initialValue = reducer(initialValue, currentValue, index, array)),initialValue) : 1 ; 
   var filter = (ary, test) =>  {
@@ -666,7 +647,6 @@ var hohenheimsd = function (){
 
     return ary.reduce((accumulator,currentValue)=> test(currentValue) ? (accumulator.push(currentValue),accumulator) : accumulator, []);
   };
-
 
   var keyBy = (ary , key) => {
     key = hohenheimsd.iteratee(key);
@@ -1144,7 +1124,7 @@ var hohenheimsd = function (){
     return hohenheimsd.get(object, pathArr)[func](...args);
   };
 
-  var keys = object => Object.keys(object);
+  var keys = object => Object.keys(object); 
 
   var keysIn = object => {
 
@@ -1393,10 +1373,6 @@ var hohenheimsd = function (){
     return string;
   };
    
-  function talkToChenJunQiao (...anywords) {  
-    return '不是';
-  }
-
   var escapeRegExp = (string='') => {
     var characters =  ["^", "$", "", ".", "*", "+", "?", "(", ")", "[", "]", "{", "}", "|"];
     for(var i of characters){
@@ -1506,7 +1482,7 @@ var hohenheimsd = function (){
 
     }else if (hohenheimsd.isRegExp(pattern)) {
       var match = pattern.exec(string);
-      var groupArr;
+      var groupArr; 
       if(!match) return string;
 
       groupArr = separateGroup(match);   //某次匹配的分组的数组
@@ -1589,6 +1565,140 @@ var hohenheimsd = function (){
       }
     }
   };
+
+
+
+  var parseJson = (() => {
+    var i = 0;
+    var str;
+    return function parse(string){
+      i = 0;
+      str = string;
+      return parseValue();
+    }
+
+    function parseValue(){
+      var char = str[i];
+
+      switch(char){
+      case '[':
+        return parseArray();
+      case '{':
+        return parseObject();
+      case '"':
+        return parseString();
+      case 't':
+        return parseTrue();
+      case 'f':
+        return parseFalse();
+      case 'n':
+        return parseNull();
+      default:
+        return parseNumber(); 
+      }
+    }
+
+    function parseTrue(){
+      var value = str.slice(i, i = i+4);
+      if(value === 'true'){
+        return true;
+      }else {
+        throw new Error('stupid boy');
+      }
+    }
+
+    function parseFalse(){
+      var value = str.slice(i, i = i+5);
+      if(value === 'false'){
+        return false;
+      }else {
+        throw new Error('stupid boy');
+      }
+    }
+
+    function parseNull(){
+      var value = str.slice(i, i = i+4);
+      if(value === 'null'){
+        return null;
+      }else {
+        throw new Error('stupid boy');
+      }
+    }
+
+    function parseArray(){
+      var char = str[++i];
+      if(char === ']'){
+        i++;
+        return []
+      }
+      var result = [];
+
+      do{
+        result.push(parseValue());
+      }while(str[i] == ',' && i++)
+
+      if(str[i] === ']'){
+        i++;
+        return result;
+      }else {
+        throw new Error('stupid boy');
+      }
+    }
+
+    function parseObject(){
+      var char = str[++i];
+      if(char === '}'){
+        return {};
+      }
+      var result = {};
+
+      do{
+        result[parseString()] = parseValue(i++);
+      }while(str[i] == ',' && i++)
+
+      if(str[i] === '}'){
+        i++;
+        return result;
+      }else {
+        throw new Error('stupid boy');
+      }
+    }
+
+    function parseString(){
+      var j = i + 1;
+      while(str[j++] !== '"'){}
+      var result = str.slice(i + 1, j - 1);
+      i = j;
+      return result;  
+    }
+
+    function isNumberChar(c) {
+      if (c >= '0' && c <= '9') {
+        return true
+      }
+      if (c === '.' || c === '+' || c ==='-' || c === 'e' || c === 'E') {
+        return true
+      }
+      return false
+    }
+
+    function parseNumber(){
+      var j = i;
+      while(isNumberChar(str[j])) {
+        j++;
+      }
+      var numString = str.slice(i, j);
+      if(/^-?(0|[1-9]\d*)(\.\d+)?(e[\-+]?\d+)?$/.test(numString)){
+        i = j;
+        return parseFloat(numString); 
+      }else {
+        throw new Error('stupid boy');
+      }
+    }
+
+  })();
+
+
   /*  
   
   
@@ -2086,6 +2196,8 @@ return {
      
     upperFirst: upperFirst,
     */
+   
+    parseJson: parseJson,
 }
 
 
